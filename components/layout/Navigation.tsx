@@ -1,10 +1,31 @@
-import { AppBar, Container, Toolbar, Typography } from '@mui/material';
+import {
+  AccountCircle,
+  AccountCircleOutlined,
+  AccountCircleRounded,
+} from '@mui/icons-material';
+import {
+  AppBar,
+  Avatar,
+  Button,
+  Container,
+  IconButton,
+  Menu,
+  MenuItem,
+  Toolbar,
+  Tooltip,
+  Typography,
+} from '@mui/material';
+import { Box } from '@mui/system';
+import { Web3Context } from 'context/web3';
 import { useTranslation } from 'next-i18next';
+import { MouseEvent, useContext, useState } from 'react';
+import { addressToShortAddress } from 'utils/converters';
 
 /**
  * Component with navigation.
  */
 export default function Navigation() {
+  const { account, connectWallet, disconnectWallet } = useContext(Web3Context);
   const { t } = useTranslation('common');
 
   return (
@@ -51,8 +72,85 @@ export default function Navigation() {
           >
             {t('app-title')}
           </Typography>
+          {/* Connect wallet button */}
+          {!account && (
+            <Button
+              variant="contained"
+              onClick={() => {
+                connectWallet?.();
+              }}
+            >
+              Connect Wallet
+            </Button>
+          )}
+          {/* Setting menu */}
+          {account && <AccountMenu />}
         </Toolbar>
       </Container>
     </AppBar>
+  );
+}
+
+function AccountMenu(): JSX.Element {
+  const { account, disconnectWallet } = useContext(Web3Context);
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+
+  function handleOpenAccountMenu(event: MouseEvent<HTMLElement>) {
+    setAnchorElUser(event.currentTarget);
+  }
+  function handleCloseAccountMenu() {
+    setAnchorElUser(null);
+  }
+
+  return (
+    <Box sx={{ flexGrow: 0 }}>
+      <IconButton size="large" onClick={handleOpenAccountMenu}>
+        <AccountCircleRounded />
+      </IconButton>
+      <Menu
+        sx={{ mt: '45px' }}
+        anchorEl={anchorElUser}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        keepMounted
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        open={Boolean(anchorElUser)}
+        onClose={handleCloseAccountMenu}
+      >
+        {/* Account Address */}
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'center',
+            my: 0.5,
+          }}
+        >
+          <Typography>{addressToShortAddress(account)}</Typography>
+        </Box>
+        {/* Disconnect wallet button */}
+        <Box
+          sx={{
+            pt: '12px',
+            pb: '6px',
+            px: '16px',
+            display: 'flex',
+          }}
+        >
+          <Button
+            variant="contained"
+            size="small"
+            onClick={() => disconnectWallet?.()}
+          >
+            Disconnect Wallet
+          </Button>
+        </Box>
+      </Menu>
+    </Box>
   );
 }

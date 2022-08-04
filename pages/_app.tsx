@@ -1,5 +1,7 @@
 import { ThemeProvider } from '@mui/material';
 import { DialogProvider } from 'context/dialog';
+import { Web3Provider } from 'context/web3';
+import { appWithTranslation } from 'next-i18next';
 import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
 import { SnackbarProvider } from 'notistack';
@@ -7,7 +9,6 @@ import { useEffect } from 'react';
 import { theme } from 'theme';
 import { handlePageViewEvent, initAnalytics } from 'utils/analytics';
 import '../styles/globals.css';
-import { appWithTranslation } from 'next-i18next';
 
 function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -37,9 +38,11 @@ function App({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider theme={theme}>
       <SnackbarProvider maxSnack={3}>
-        <DialogProvider>
-          <Component {...pageProps} />
-        </DialogProvider>
+        <Web3Provider>
+          <DialogProvider>
+            <Component {...pageProps} />
+          </DialogProvider>
+        </Web3Provider>
       </SnackbarProvider>
     </ThemeProvider>
   );
