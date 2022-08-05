@@ -123,6 +123,12 @@ function AccountMenu(): JSX.Element {
             <Typography>Trader ({addressToShortAddress(account)})</Typography>
           </MenuItem>
         </Link>
+        {/* Traders link */}
+        <Link href="/traders">
+          <MenuItem onClick={handleCloseAccountMenu}>
+            <Typography>Traders</Typography>
+          </MenuItem>
+        </Link>
         {/* Disconnect wallet button */}
         <Box
           sx={{

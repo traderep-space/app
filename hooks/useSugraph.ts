@@ -63,9 +63,10 @@ function getFindTradersQuery(
     ? `id_in: ["${ids.map((id) => id.toLowerCase()).join('","')}"]`
     : '';
   let filterParams = `where: {${idsFilter}}`;
+  let sortParams = `orderBy: positiveReputation, orderDirection: desc`;
   let paginationParams = `first: ${first}, skip: ${skip}`;
   return `{
-    traders(${filterParams}, ${paginationParams}) {
+    traders(${filterParams}, ${sortParams}, ${paginationParams}) {
       id
       positiveReputation
       negativeReputation
