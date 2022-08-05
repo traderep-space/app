@@ -117,10 +117,10 @@ function AccountMenu(): JSX.Element {
         open={Boolean(anchorElUser)}
         onClose={handleCloseAccountMenu}
       >
-        {/* Account */}
-        <Link href={`/accounts/${account}`}>
+        {/* Trader link */}
+        <Link href={`/traders/${account}`}>
           <MenuItem onClick={handleCloseAccountMenu}>
-            <Typography>Account ({addressToShortAddress(account)})</Typography>
+            <Typography>Trader ({addressToShortAddress(account)})</Typography>
           </MenuItem>
         </Link>
         {/* Disconnect wallet button */}

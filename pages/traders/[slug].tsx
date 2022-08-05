@@ -16,9 +16,9 @@ import { useContext, useEffect, useState } from 'react';
 import { addressToShortAddress } from 'utils/converters';
 
 /**
- * Account page.
+ * Trader page.
  */
-export default function Account() {
+export default function TraderPage() {
   const { account } = useContext(Web3Context);
   const { showDialog, closeDialog } = useContext(DialogContext);
   const router = useRouter();
@@ -55,7 +55,7 @@ export default function Account() {
     return (
       <Box>
         <Typography variant="h4">
-          Account {addressToShortAddress(slug as string)}
+          Trader {addressToShortAddress(slug as string)}
         </Typography>
         <Divider sx={{ mt: 2 }} />
         {trader && (
@@ -77,7 +77,7 @@ export default function Account() {
     return (
       <Box sx={{ mt: 6 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Typography variant="h5">Forecasts posted by account</Typography>
+          <Typography variant="h5">Forecasts posted by trader</Typography>
           {account?.toLowerCase() === (slug as string).toLowerCase() && (
             <Button
               onClick={() =>
@@ -98,7 +98,7 @@ export default function Account() {
   function ForecastsOwned() {
     return (
       <Box sx={{ mt: 6 }}>
-        <Typography variant="h5">Forecasts owned by account</Typography>
+        <Typography variant="h5">Forecasts owned by trader</Typography>
         <Divider sx={{ mt: 2 }} />
         <ForecastList forecasts={forecastsOwned} sx={{ mt: 1 }} />
       </Box>
@@ -111,8 +111,6 @@ export default function Account() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account, slug]);
-
-  console.log('[Dev] trader', trader);
 
   return (
     <Layout>
