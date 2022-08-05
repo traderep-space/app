@@ -20,7 +20,7 @@ import { addressToShortAddress } from 'utils/converters';
  * Component with navigation.
  */
 export default function Navigation() {
-  const { account, connectWallet, disconnectWallet } = useContext(Web3Context);
+  const { account, connectWallet } = useContext(Web3Context);
   const { t } = useTranslation('common');
 
   return (

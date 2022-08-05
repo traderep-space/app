@@ -11,50 +11,39 @@ import { useContext } from 'react';
  * Hook for work with Zora.
  */
 export default function useZora() {
-  const { provider, isNetworkChainIdCorrect } = useContext(Web3Context);
+  const { account, provider, isNetworkChainIdCorrect } =
+    useContext(Web3Context);
 
-  /**
-   * TODO: Move hardcoded values to function params
-   */
-  let approveTokens = async function () {
+  let approveTokens = async function (contractAddress: string) {
     // Check network
     if (!isNetworkChainIdCorrect) {
       throw new WrongNetworkError();
     }
-    // Define addresses
-    const ownerAddress = '0x4306D7a79265D2cb85Db0c5a55ea5F4f6F73C4B1';
-    const nftContractAddress = '0x5A544F35Dd360B67B59027D6b0F539231BF0F0B0';
-
     // Connect NFT contract
     const erc721Contract = IERC721__factory.connect(
-      nftContractAddress,
+      contractAddress,
       provider?.getSigner(),
     );
-
     // Connect Zora V3 Module Manager contract
     const moduleManagerContract = ZoraModuleManager__factory.connect(
       zoraAddresses.ZoraModuleManager,
       provider?.getSigner(),
     );
-
     // Approving a Transfer Helper
     const erc721TransferHelperAddress = zoraAddresses.ERC721TransferHelper;
     const isTransferHelperApproved = await erc721Contract.isApprovedForAll(
-      ownerAddress, // NFT owner address
+      account,
       erc721TransferHelperAddress, // V3 Module Transfer Helper to approve
     );
     if (isTransferHelperApproved === false) {
-      console.log('[Dev] Start approving a Transfer Helper');
       await erc721Contract.setApprovalForAll(erc721TransferHelperAddress, true);
     }
-
     // Approving Modules in the Module Manager
     const isModuleApproved = await moduleManagerContract.isModuleApproved(
-      ownerAddress,
+      account,
       zoraAddresses.AsksV1_1,
     );
     if (isModuleApproved === false) {
-      console.log('[Dev] Start approving Modules in the Module Manager');
       await moduleManagerContract.setApprovalForModule(
         zoraAddresses.AsksV1_1,
         true,
@@ -62,41 +51,82 @@ export default function useZora() {
     }
   };
 
-  /**
-   * TODO: Move hardcoded values to function params
-   */
-  let createAsk = async function () {
+  let createAsk = async function (
+    contractAddress: string,
+    tokenId: string,
+    price: string,
+  ) {
     // Check network
     if (!isNetworkChainIdCorrect) {
       throw new WrongNetworkError();
     }
-
-    // Connect Asks v1.1 Module Contract
+    // Approve tokens if required
+    await approveTokens(contractAddress);
+    // Define params
+    const currency = '0x0000000000000000000000000000000000000000'; // 0 address for ETH sale
+    const findersFeeBps = '0';
+    // Connect AsksV1_1 module
     const askModuleContract = AsksV1_1__factory.connect(
       zoraAddresses.AsksV1_1,
       provider?.getSigner(),
     );
-
-    // Define params
-    const nftContractAddress = '0x5A544F35Dd360B67B59027D6b0F539231BF0F0B0';
-    const askPrice = ethers.utils.parseEther('0.01');
-    const ownerAddress = '0x4306D7a79265D2cb85Db0c5a55ea5F4f6F73C4B1';
-    const findersFeeBps = '0';
-    const tokenId = '0';
-
-    // Calling Create Ask
-    await askModuleContract.createAsk(
-      nftContractAddress,
+    // Use module
+    return askModuleContract.createAsk(
+      contractAddress,
       tokenId,
-      askPrice,
-      '0x0000000000000000000000000000000000000000', // 0 address for ETH sale
-      ownerAddress,
+      ethers.utils.parseEther(price),
+      currency,
+      account,
       findersFeeBps,
     );
+  };
+
+  let fillAsk = async function (
+    contractAddress: string,
+    tokenId: string,
+    price: string,
+  ) {
+    // Check network
+    if (!isNetworkChainIdCorrect) {
+      throw new WrongNetworkError();
+    }
+    // Define params
+    const finder = '0x0000000000000000000000000000000000000000'; // Address that helped find the buyer
+    const currency = '0x0000000000000000000000000000000000000000'; // 0 address for ETH sale
+    // Connect AsksV1_1 module
+    const askModuleContract = AsksV1_1__factory.connect(
+      zoraAddresses.AsksV1_1,
+      provider?.getSigner(),
+    );
+    // Use module
+    await askModuleContract.fillAsk(
+      contractAddress,
+      tokenId,
+      currency,
+      ethers.utils.parseEther(price),
+      finder,
+      { value: ethers.utils.parseEther(price) },
+    );
+  };
+
+  let getAsk = async function (contractAddress: string, tokenId: string) {
+    // Check network
+    if (!isNetworkChainIdCorrect) {
+      throw new WrongNetworkError();
+    }
+    // Connect AsksV1_1 module
+    const askModuleContract = AsksV1_1__factory.connect(
+      zoraAddresses.AsksV1_1,
+      provider?.getSigner(),
+    );
+    // Use module
+    return askModuleContract.askForNFT(contractAddress, tokenId);
   };
 
   return {
     approveTokens,
     createAsk,
+    fillAsk,
+    getAsk,
   };
 }
