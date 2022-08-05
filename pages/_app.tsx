@@ -4,6 +4,7 @@ import { Web3Provider } from 'context/web3';
 import { appWithTranslation } from 'next-i18next';
 import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
+import NextNProgress from 'nextjs-progressbar';
 import { SnackbarProvider } from 'notistack';
 import { useEffect } from 'react';
 import { theme } from 'theme';
@@ -61,6 +62,7 @@ function App({ Component, pageProps }: AppProps) {
       <SnackbarProvider maxSnack={3}>
         <Web3Provider>
           <DialogProvider>
+            <NextNProgress height={4} />
             <Component {...pageProps} />
           </DialogProvider>
         </Web3Provider>
