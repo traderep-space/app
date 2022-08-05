@@ -1,23 +1,18 @@
-import {
-  AccountCircle,
-  AccountCircleOutlined,
-  AccountCircleRounded,
-} from '@mui/icons-material';
+import { AccountCircleRounded } from '@mui/icons-material';
 import {
   AppBar,
-  Avatar,
   Button,
   Container,
   IconButton,
   Menu,
   MenuItem,
   Toolbar,
-  Tooltip,
   Typography,
 } from '@mui/material';
 import { Box } from '@mui/system';
 import { Web3Context } from 'context/web3';
 import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
 import { MouseEvent, useContext, useState } from 'react';
 import { addressToShortAddress } from 'utils/converters';
 
@@ -122,17 +117,12 @@ function AccountMenu(): JSX.Element {
         open={Boolean(anchorElUser)}
         onClose={handleCloseAccountMenu}
       >
-        {/* Account Address */}
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'center',
-            my: 0.5,
-          }}
-        >
-          <Typography>{addressToShortAddress(account)}</Typography>
-        </Box>
+        {/* Account */}
+        <Link href={`/accounts/${account}`}>
+          <MenuItem onClick={handleCloseAccountMenu}>
+            <Typography>Account ({addressToShortAddress(account)})</Typography>
+          </MenuItem>
+        </Link>
         {/* Disconnect wallet button */}
         <Box
           sx={{
@@ -143,6 +133,7 @@ function AccountMenu(): JSX.Element {
           }}
         >
           <Button
+            sx={{ flex: 1 }}
             variant="contained"
             size="small"
             onClick={() => disconnectWallet?.()}
