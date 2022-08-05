@@ -1,10 +1,7 @@
-import { Divider, Link as MuiLink, Stack, Typography } from '@mui/material';
+import { Divider, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import Layout from 'components/layout/Layout';
-import BlockchainIcon from 'icons/BlockchainIcon';
-import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import Image from 'next/image';
 
 /**
  * Sandbox page.
