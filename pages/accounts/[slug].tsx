@@ -1,6 +1,7 @@
-import { Button, Divider, Typography } from '@mui/material';
+import { Button, Divider, Stack, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import Forecast from 'classes/Forecast';
+import Trader from 'classes/Trader';
 import ForecastList from 'components/forecast/ForecastList';
 import ForecastPostDialog from 'components/forecast/ForecastPostDialog';
 import Layout from 'components/layout/Layout';
@@ -8,6 +9,7 @@ import { DialogContext } from 'context/dialog';
 import { Web3Context } from 'context/web3';
 import useError from 'hooks/useError';
 import useForecast from 'hooks/useForecast';
+import useTrader from 'hooks/useTrader';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
@@ -22,7 +24,9 @@ export default function Account() {
   const router = useRouter();
   const { slug } = router.query;
   const { handleError } = useError();
+  const { getTrader } = useTrader();
   const { getForecasts } = useForecast();
+  const [trader, setTrader] = useState<Trader | null>(null);
   const [forecastsPosted, setForecastsPosted] =
     useState<Array<Forecast> | null>(null);
   const [forecastsOwned, setForecastsOwned] = useState<Array<Forecast> | null>(
@@ -32,11 +36,14 @@ export default function Account() {
   async function loadData() {
     try {
       // Clear states
+      setTrader(null);
       setForecastsPosted(null);
       setForecastsOwned(null);
       // Load data
+      const trader = await getTrader(slug as string);
       const forecastsPosted = await getForecasts(slug as string);
       const forecastsOwned = await getForecasts(undefined, slug as string);
+      setTrader(trader);
       setForecastsPosted(forecastsPosted);
       setForecastsOwned(forecastsOwned);
     } catch (error: any) {
@@ -51,12 +58,17 @@ export default function Account() {
           Account {addressToShortAddress(slug as string)}
         </Typography>
         <Divider sx={{ mt: 2 }} />
-        <Typography sx={{ mt: 1 }} color="success.main">
-          Positive Reputation: ...
-        </Typography>
-        <Typography sx={{ mt: 1 }} color="error.main">
-          Negative Reputation: ...
-        </Typography>
+        {trader && (
+          <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
+            <Typography>Reputation:</Typography>
+            <Typography sx={{ mt: 1 }} color="success.main">
+              +{trader.positiveReputation}
+            </Typography>
+            <Typography sx={{ mt: 1 }} color="error.main">
+              -{trader.negativeReputation}
+            </Typography>
+          </Stack>
+        )}
       </Box>
     );
   }
@@ -99,6 +111,8 @@ export default function Account() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account, slug]);
+
+  console.log('[Dev] trader', trader);
 
   return (
     <Layout>

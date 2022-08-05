@@ -4,6 +4,17 @@ import axios from 'axios';
  * Hook to work with subgraph.
  */
 export default function useSubgraph() {
+  let findTraders = async function (
+    ids?: Array<string>,
+    first?: number,
+    skip?: number,
+  ) {
+    const response = await makeSubgraphQuery(
+      getFindTradersQuery(ids, first, skip),
+    );
+    return response.traders;
+  };
+
   let findForecasts = async function (
     author?: string,
     owner?: string,
@@ -17,6 +28,7 @@ export default function useSubgraph() {
   };
 
   return {
+    findTraders,
     findForecasts,
   };
 }
@@ -40,6 +52,25 @@ async function makeSubgraphQuery(query: string) {
       `Could not query the subgraph: ${JSON.stringify(error.message)}`,
     );
   }
+}
+
+function getFindTradersQuery(
+  ids?: Array<string>,
+  first?: number,
+  skip?: number,
+) {
+  let idsFilter = ids
+    ? `id_in: ["${ids.map((id) => id.toLowerCase()).join('","')}"]`
+    : '';
+  let filterParams = `where: {${idsFilter}}`;
+  let paginationParams = `first: ${first}, skip: ${skip}`;
+  return `{
+    traders(${filterParams}, ${paginationParams}) {
+      id
+      positiveReputation
+      negativeReputation
+    }
+  }`;
 }
 
 function getFindForecastQuery(
