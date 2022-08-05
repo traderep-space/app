@@ -6,7 +6,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 /**
  * Sandbox page.
  */
-export default function Sandbox() {
+export default function SandboxPage() {
   return (
     <Layout>
       <Typography variant="h4">Sandbox</Typography>

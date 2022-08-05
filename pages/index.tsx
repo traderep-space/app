@@ -9,7 +9,7 @@ import Image from 'next/image';
 /**
  * Home page.
  */
-export default function Home() {
+export default function HomePage() {
   const { t } = useTranslation('common');
 
   function scrollTo(elementId: string) {
