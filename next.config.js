@@ -1,4 +1,6 @@
 const { i18n } = require('./next-i18next.config');
+// Fix for Zora (https://stackoverflow.com/a/70492617)
+const withTM = require('next-transpile-modules')(['@zoralabs/v3']);
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -16,4 +18,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = withTM(nextConfig);
