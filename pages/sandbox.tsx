@@ -1,4 +1,4 @@
-import { Divider, Typography } from '@mui/material';
+import { Button, Divider, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import Layout from 'components/layout/Layout';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -12,7 +12,9 @@ export default function Sandbox() {
       <Typography variant="h4">Sandbox</Typography>
       <Divider sx={{ mt: 2 }} />
       <Box sx={{ mt: 2 }}>
-        <Typography>...</Typography>
+        <Button variant="contained" onClick={() => {}}>
+          Button 1
+        </Button>
       </Box>
     </Layout>
   );
