@@ -12,6 +12,7 @@ import { JSONSchema7 } from 'json-schema';
 import { MuiForm5 as Form } from '@rjsf/material-ui';
 import { LoadingButton } from '@mui/lab';
 import { Save } from '@mui/icons-material';
+import useForecast from 'hooks/useForecast';
 
 /**
  * A dialog for create forecast.
@@ -19,6 +20,7 @@ import { Save } from '@mui/icons-material';
 export default function ForecastPostDialog({ isClose, onClose }: any) {
   const { showToastSuccess } = useToast();
   const { handleError } = useError();
+  const { postForecast } = useForecast();
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(!isClose);
 
@@ -69,7 +71,9 @@ export default function ForecastPostDialog({ isClose, onClose }: any) {
   async function submit({ formData }: any) {
     try {
       setIsLoading(true);
-      // TODO: Implement
+      // TODO: Encrypt data and post to ipfs
+      const tokenUri = 'ipfs://...';
+      await postForecast(tokenUri);
       showToastSuccess('Success! Data will be updated soon');
       close();
     } catch (error: any) {
@@ -89,9 +93,7 @@ export default function ForecastPostDialog({ isClose, onClose }: any) {
       <DialogContent>
         <Form
           schema={schema}
-          // formData={formData}
           uiSchema={uiSchema}
-          // widgets={widgets}
           onSubmit={submit}
           disabled={isLoading}
         >

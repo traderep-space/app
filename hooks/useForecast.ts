@@ -1,4 +1,5 @@
 import Forecast from 'classes/Forecast';
+import useForecastContract from './contracts/useForecastContract';
 import useSubgraph from './useSugraph';
 
 /**
@@ -6,6 +7,11 @@ import useSubgraph from './useSugraph';
  */
 export default function useForecast() {
   const { findForecasts } = useSubgraph();
+  const { post } = useForecastContract();
+
+  let postForecast = async function (tokenUri: string) {
+    return post(tokenUri);
+  };
 
   let getForecasts = async function (
     author?: string,
@@ -20,6 +26,7 @@ export default function useForecast() {
   };
 
   return {
+    postForecast,
     getForecasts,
   };
 }

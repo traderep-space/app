@@ -78,7 +78,7 @@ export default function Account() {
           )}
         </Box>
         <Divider sx={{ mt: 2 }} />
-        <ForecastList items={forecastsPosted} sx={{ mt: 1 }} />
+        <ForecastList forecasts={forecastsPosted} sx={{ mt: 1 }} />
       </Box>
     );
   }
@@ -88,7 +88,7 @@ export default function Account() {
       <Box sx={{ mt: 6 }}>
         <Typography variant="h5">Forecasts owned by account</Typography>
         <Divider sx={{ mt: 2 }} />
-        <ForecastList items={forecastsOwned} sx={{ mt: 1 }} />
+        <ForecastList forecasts={forecastsOwned} sx={{ mt: 1 }} />
       </Box>
     );
   }

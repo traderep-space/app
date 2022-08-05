@@ -19,9 +19,9 @@ export default function ForecastList({ forecasts, sx }: any) {
       )}
       {forecasts?.length > 0 && (
         <>
-          {forecasts.map((item: any, index: number) => (
+          {forecasts.map((forecast: any, index: number) => (
             <Grid key={index} item xs={12} md={6}>
-              <ForecastCard item={item} />
+              <ForecastCard forecast={forecast} />
             </Grid>
           ))}
         </>
