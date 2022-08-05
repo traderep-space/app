@@ -66,7 +66,7 @@ export default function Account() {
       <Box sx={{ mt: 6 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Typography variant="h5">Forecasts posted by account</Typography>
-          {account === slug && (
+          {account?.toLowerCase() === (slug as string).toLowerCase() && (
             <Button
               onClick={() =>
                 showDialog?.(<ForecastPostDialog onClose={closeDialog} />)
