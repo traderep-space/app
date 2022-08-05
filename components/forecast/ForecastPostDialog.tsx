@@ -23,6 +23,7 @@ export default function ForecastPostDialog({ isClose, onClose }: any) {
   const { postForecast } = useForecast();
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(!isClose);
+  const [formData, setFormData] = useState({});
 
   const schema: JSONSchema7 = {
     type: 'object',
@@ -63,6 +64,7 @@ export default function ForecastPostDialog({ isClose, onClose }: any) {
   };
 
   async function close() {
+    setFormData({});
     setIsLoading(false);
     setIsOpen(false);
     onClose();
@@ -94,6 +96,7 @@ export default function ForecastPostDialog({ isClose, onClose }: any) {
         <Form
           schema={schema}
           uiSchema={uiSchema}
+          formData={formData}
           onSubmit={submit}
           disabled={isLoading}
         >
