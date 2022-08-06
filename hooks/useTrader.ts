@@ -1,5 +1,5 @@
 import Trader from 'classes/Trader';
-import useSubgraph from './useSugraph';
+import useSubgraph from './useSubgraph';
 
 /**
  * Hook for work with traders.

@@ -3,6 +3,7 @@ import { DialogContext } from 'context/dialog';
 import { Web3Context } from 'context/web3';
 import { ethers } from 'ethers';
 import useError from 'hooks/useError';
+import useForecast from 'hooks/useForecast';
 import useToast from 'hooks/useToast';
 import useZora from 'hooks/useZora';
 import { useContext, useEffect, useState } from 'react';
@@ -18,6 +19,7 @@ export default function ForecastCard({ forecast }: any) {
   const { showDialog, closeDialog } = useContext(DialogContext);
   const { handleError } = useError();
   const { showToastSuccess } = useToast();
+  const { verifyForecast } = useForecast();
   const { getAsk, fillAsk } = useZora();
   const [ask, setAsk] = useState<any>(null);
 
@@ -88,6 +90,27 @@ export default function ForecastCard({ forecast }: any) {
     );
   }
 
+  function VerifyButton() {
+    if (!forecast.isVerified) {
+      return (
+        <Button
+          size="small"
+          variant="contained"
+          onClick={() =>
+            verifyForecast(forecast.id)
+              .then(() =>
+                showToastSuccess('Success! Data will be updated soon'),
+              )
+              .catch((error: any) => handleError(error, true))
+          }
+        >
+          Verify
+        </Button>
+      );
+    }
+    return <></>;
+  }
+
   useEffect(() => {
     if (forecast) {
       setAsk(null);
@@ -112,6 +135,11 @@ export default function ForecastCard({ forecast }: any) {
           <Typography>
             Owner: {addressToShortAddress(forecast.owner)}
           </Typography>
+          {forecast.isVerified && (
+            <Typography>
+              {forecast.isTrue ? 'Is true' : 'Is not true'}
+            </Typography>
+          )}
           {ask && !ask.askPrice.isZero() && (
             <Typography>
               Price: {ethers.utils.formatEther(ask.askPrice)}{' '}
@@ -120,6 +148,7 @@ export default function ForecastCard({ forecast }: any) {
           )}
           <Stack direction="row" spacing={1.5} sx={{ mt: 2 }}>
             <OpenDetailsButton />
+            <VerifyButton />
             <CreateAskButton />
             <FillAskButton />
           </Stack>

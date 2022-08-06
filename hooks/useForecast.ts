@@ -4,7 +4,7 @@ import { base64ToBlob, blobToBase64 } from 'utils/converters';
 import useForecastContract from './contracts/useForecastContract';
 import useIpfs from './useIpfs';
 import useLitProtocol from './useLitProtocol';
-import useSubgraph from './useSugraph';
+import useSubgraph from './useSubgraph';
 
 /**
  * Hook for work with forecasts.
@@ -13,7 +13,7 @@ export default function useForecast() {
   const { findForecasts } = useSubgraph();
   const { uploadJsonToIPFS, loadJsonFromIPFS } = useIpfs();
   const { encrypt, decrypt } = useLitProtocol();
-  const { create, setUri } = useForecastContract();
+  const { create, setUri, verify } = useForecastContract();
 
   let postForecast = async function (params: any) {
     // Create forecast and get token id
@@ -59,6 +59,10 @@ export default function useForecast() {
     return JSON.parse(decryptedString);
   };
 
+  let verifyForecast = async function (id: string) {
+    return verify(id);
+  };
+
   let getForecast = async function (id: string) {
     const forecasts = await getForecasts([id]);
     return forecasts.length > 0 ? forecasts[0] : null;
@@ -86,6 +90,7 @@ export default function useForecast() {
   return {
     postForecast,
     getForecastDetails,
+    verifyForecast,
     getForecast,
     getForecasts,
   };
@@ -97,5 +102,7 @@ function convertSubgraphForecastToForecast(subgraphForecast: any) {
     subgraphForecast.author,
     subgraphForecast.owner,
     subgraphForecast.uri,
+    subgraphForecast.isVerified,
+    subgraphForecast.isTrue,
   );
 }

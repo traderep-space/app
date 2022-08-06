@@ -95,6 +95,8 @@ function getFindForecastQuery(
       author
       owner
       uri
+      isVerified
+      isTrue
     }
   }`;
 }

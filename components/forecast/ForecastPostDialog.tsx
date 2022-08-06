@@ -72,6 +72,7 @@ export default function ForecastPostDialog({ isClose, onClose }: any) {
 
   async function submit({ formData }: any) {
     try {
+      setFormData(formData);
       setIsLoading(true);
       await postForecast(formData);
       showToastSuccess('Success! Data will be updated soon');
