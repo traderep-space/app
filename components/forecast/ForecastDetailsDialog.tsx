@@ -34,7 +34,10 @@ export default function ForecastDetailsDialog({
       setIsLoading(true);
       getForecastDetails(forecast.id)
         .then((forecastDetails) => setForecastDetails(forecastDetails))
-        .catch((error: any) => handleError(error, true))
+        .catch((error: any) => {
+          handleError(error, true);
+          close();
+        })
         .finally(() => setIsLoading(false));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
