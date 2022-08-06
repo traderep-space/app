@@ -11,6 +11,8 @@ import { addressToShortAddress } from 'utils/converters';
 import ForecastCreateAskDialog from './ForecastCreateAskDialog';
 import ForecastDetailsDialog from './ForecastDetailsDialog';
 
+const LitJsSdk = require('lit-js-sdk');
+
 /**
  * A component with a card with forecast.
  */
@@ -75,16 +77,17 @@ export default function ForecastCard({ forecast }: any) {
   }
 
   function OpenDetailsButton() {
+    async function openDetails() {
+      await LitJsSdk.checkAndSignAuthMessage({
+        chain: process.env.NEXT_PUBLIC_LIT_PROTOCOL_CHAIN,
+      });
+      showDialog?.(
+        <ForecastDetailsDialog forecast={forecast} onClose={closeDialog} />,
+      );
+    }
+
     return (
-      <Button
-        size="small"
-        variant="contained"
-        onClick={() =>
-          showDialog?.(
-            <ForecastDetailsDialog forecast={forecast} onClose={closeDialog} />,
-          )
-        }
-      >
+      <Button size="small" variant="contained" onClick={() => openDetails()}>
         Open Details
       </Button>
     );
