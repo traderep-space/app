@@ -1,4 +1,4 @@
-import { Button, Card, CardContent, Typography } from '@mui/material';
+import { Button, Card, CardContent, Stack, Typography } from '@mui/material';
 import { DialogContext } from 'context/dialog';
 import { Web3Context } from 'context/web3';
 import { ethers } from 'ethers';
@@ -8,6 +8,7 @@ import useZora from 'hooks/useZora';
 import { useContext, useEffect, useState } from 'react';
 import { addressToShortAddress } from 'utils/converters';
 import ForecastCreateAskDialog from './ForecastCreateAskDialog';
+import ForecastDetailsDialog from './ForecastDetailsDialog';
 
 /**
  * A component with a card with forecast.
@@ -26,7 +27,6 @@ export default function ForecastCard({ forecast }: any) {
         <Button
           size="small"
           variant="contained"
-          sx={{ mt: 2 }}
           onClick={() =>
             showDialog?.(
               <ForecastCreateAskDialog
@@ -53,7 +53,6 @@ export default function ForecastCard({ forecast }: any) {
         <Button
           size="small"
           variant="contained"
-          sx={{ mt: 2 }}
           onClick={() =>
             fillAsk(
               process.env.NEXT_PUBLIC_FORECAST_CONTRACT_ADDRESS || '',
@@ -71,6 +70,22 @@ export default function ForecastCard({ forecast }: any) {
       );
     }
     return <></>;
+  }
+
+  function OpenDetailsButton() {
+    return (
+      <Button
+        size="small"
+        variant="contained"
+        onClick={() =>
+          showDialog?.(
+            <ForecastDetailsDialog forecast={forecast} onClose={closeDialog} />,
+          )
+        }
+      >
+        Open Details
+      </Button>
+    );
   }
 
   useEffect(() => {
@@ -103,8 +118,11 @@ export default function ForecastCard({ forecast }: any) {
               {process.env.NEXT_PUBLIC_NETWORK_CURRENCY_SYMBOL}
             </Typography>
           )}
-          <CreateAskButton />
-          <FillAskButton />
+          <Stack direction="row" spacing={1.5} sx={{ mt: 2 }}>
+            <OpenDetailsButton />
+            <CreateAskButton />
+            <FillAskButton />
+          </Stack>
         </CardContent>
       </Card>
     );

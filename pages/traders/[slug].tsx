@@ -41,8 +41,12 @@ export default function TraderPage() {
       setForecastsOwned(null);
       // Load data
       const trader = await getTrader(slug as string);
-      const forecastsPosted = await getForecasts(slug as string);
-      const forecastsOwned = await getForecasts(undefined, slug as string);
+      const forecastsPosted = await getForecasts(undefined, slug as string);
+      const forecastsOwned = await getForecasts(
+        undefined,
+        undefined,
+        slug as string,
+      );
       setTrader(trader);
       setForecastsPosted(forecastsPosted);
       setForecastsOwned(forecastsOwned);

@@ -16,13 +16,14 @@ export default function useSubgraph() {
   };
 
   let findForecasts = async function (
+    ids?: Array<string>,
     author?: string,
     owner?: string,
     first?: number,
     skip?: number,
   ) {
     const response = await makeSubgraphQuery(
-      getFindForecastQuery(author, owner, first, skip),
+      getFindForecastQuery(ids, author, owner, first, skip),
     );
     return response.forecasts;
   };
@@ -75,20 +76,25 @@ function getFindTradersQuery(
 }
 
 function getFindForecastQuery(
+  ids?: Array<string>,
   author?: string,
   owner?: string,
   first?: number,
   skip?: number,
 ) {
+  let idsFilter = ids
+    ? `id_in: ["${ids.map((id) => id.toLowerCase()).join('","')}"]`
+    : '';
   let authorFilter = author ? `author: "${author.toLowerCase()}"` : '';
   let ownerFilter = owner ? `owner: "${owner.toLowerCase()}"` : '';
-  let filterParams = `where: {${authorFilter}, ${ownerFilter}}`;
+  let filterParams = `where: {${idsFilter}, ${authorFilter}, ${ownerFilter}}`;
   let paginationParams = `first: ${first}, skip: ${skip}`;
   return `{
     forecasts(${filterParams}, ${paginationParams}) {
       id
       author
       owner
+      uri
     }
   }`;
 }
