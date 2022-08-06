@@ -1,4 +1,10 @@
-import { Dialog, DialogContent, DialogTitle, Typography } from '@mui/material';
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Stack,
+  Typography,
+} from '@mui/material';
 import useError from 'hooks/useError';
 import useForecast from 'hooks/useForecast';
 import { useEffect, useState } from 'react';
@@ -38,28 +44,33 @@ export default function ForecastDetailsDialog({
     <Dialog
       open={isOpen}
       onClose={isLoading ? () => {} : close}
-      maxWidth="sm"
+      maxWidth="xs"
       fullWidth
     >
-      <DialogTitle>Details of forecast #{forecast.id}</DialogTitle>
+      <DialogTitle>Forecast #{forecast.id}</DialogTitle>
       <DialogContent>
         {isLoading ? (
           <Typography>Loading...</Typography>
         ) : forecastDetails ? (
-          <>
-            <Typography gutterBottom>
-              Symbol: {forecastDetails.symbol}
-            </Typography>
-            <Typography gutterBottom>
-              Order Price: {forecastDetails.orderPrice}
-            </Typography>
-            <Typography gutterBottom>
-              Take Profie Price: {forecastDetails.tpPrice}
-            </Typography>
-            <Typography gutterBottom>
-              Stop Loss Price: {forecastDetails.slPrice}
-            </Typography>
-          </>
+          <Stack spacing={1}>
+            {/* Symbol */}
+            <Stack direction="row" justifyContent="space-between">
+              <Typography color="text.secondary">Symbol</Typography>
+              <Typography>{forecastDetails.symbol}</Typography>
+            </Stack>
+            <Stack direction="row" justifyContent="space-between">
+              <Typography color="text.secondary">Order Price</Typography>
+              <Typography>{forecastDetails.orderPrice}</Typography>
+            </Stack>
+            <Stack direction="row" justifyContent="space-between">
+              <Typography color="text.secondary">Take Profie Price</Typography>
+              <Typography>{forecastDetails.tpPrice}</Typography>
+            </Stack>
+            <Stack direction="row" justifyContent="space-between">
+              <Typography color="text.secondary">Stop Loss Price</Typography>
+              <Typography>{forecastDetails.slPrice}</Typography>
+            </Stack>
+          </Stack>
         ) : (
           <></>
         )}

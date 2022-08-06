@@ -1,4 +1,12 @@
-import { Button, Card, CardContent, Stack, Typography } from '@mui/material';
+import {
+  Button,
+  Card,
+  CardContent,
+  Divider,
+  Link as MuiLink,
+  Stack,
+  Typography,
+} from '@mui/material';
 import { DialogContext } from 'context/dialog';
 import { Web3Context } from 'context/web3';
 import { ethers } from 'ethers';
@@ -6,6 +14,7 @@ import useError from 'hooks/useError';
 import useForecast from 'hooks/useForecast';
 import useToast from 'hooks/useToast';
 import useZora from 'hooks/useZora';
+import Link from 'next/link';
 import { useContext, useEffect, useState } from 'react';
 import { addressToShortAddress } from 'utils/converters';
 import ForecastCreateAskDialog from './ForecastCreateAskDialog';
@@ -88,7 +97,7 @@ export default function ForecastCard({ forecast }: any) {
 
     return (
       <Button size="small" variant="contained" onClick={() => openDetails()}>
-        Open Details
+        Details
       </Button>
     );
   }
@@ -131,29 +140,83 @@ export default function ForecastCard({ forecast }: any) {
     return (
       <Card variant="outlined">
         <CardContent sx={{ p: '10px !important' }}>
-          <Typography>#{forecast.id}</Typography>
-          <Typography>
-            Author: {addressToShortAddress(forecast.author)}
-          </Typography>
-          <Typography>
-            Owner: {addressToShortAddress(forecast.owner)}
-          </Typography>
-          {forecast.isVerified && (
-            <Typography>
-              {forecast.isTrue ? 'Is true' : 'Is not true'}
-            </Typography>
-          )}
-          {ask && !ask.askPrice.isZero() && (
-            <Typography>
-              Price: {ethers.utils.formatEther(ask.askPrice)}{' '}
-              {process.env.NEXT_PUBLIC_NETWORK_CURRENCY_SYMBOL}
-            </Typography>
-          )}
-          <Stack direction="row" spacing={1.5} sx={{ mt: 2 }}>
-            <OpenDetailsButton />
-            <VerifyButton />
-            <CreateAskButton />
-            <FillAskButton />
+          <Stack spacing={1}>
+            {/* Id */}
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Typography color="text.secondary">Forecast</Typography>
+              <Stack direction="row" spacing={1.5} alignItems="center">
+                <Typography>#{forecast.id}</Typography>
+                <OpenDetailsButton />
+              </Stack>
+            </Stack>
+            {/* Verification status */}
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Typography color="text.secondary">Verification</Typography>
+              {forecast.isVerified ? (
+                <Typography>
+                  {forecast.isTrue ? '👍 Is True' : 'Is Not True'}
+                </Typography>
+              ) : (
+                <Stack direction="row" spacing={1.5} alignItems="center">
+                  <Typography>❓Not Verified</Typography>
+                  <VerifyButton />
+                </Stack>
+              )}
+            </Stack>
+            <Divider />
+            {/* Author */}
+            <Stack direction="row" justifyContent="space-between">
+              <Typography color="text.secondary">Author</Typography>
+              <Link href={`/traders/${forecast.author}`} passHref>
+                <MuiLink underline="none">
+                  <Typography>
+                    {addressToShortAddress(forecast.author)}
+                  </Typography>
+                </MuiLink>
+              </Link>
+            </Stack>
+            {/* Owner */}
+            <Stack direction="row" justifyContent="space-between">
+              <Typography color="text.secondary">Owner</Typography>
+              <Link href={`/traders/${forecast.owner}`} passHref>
+                <MuiLink underline="none">
+                  <Typography>
+                    {addressToShortAddress(forecast.owner)}
+                  </Typography>
+                </MuiLink>
+              </Link>
+            </Stack>
+            <Divider />
+            {/* Price */}
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Typography color="text.secondary">Price</Typography>
+              {ask && !ask.askPrice.isZero() ? (
+                <Stack direction="row" spacing={1.5} alignItems="center">
+                  <Typography>
+                    {ethers.utils.formatEther(ask.askPrice)}{' '}
+                    {process.env.NEXT_PUBLIC_NETWORK_CURRENCY_SYMBOL}
+                  </Typography>
+                  <FillAskButton />
+                </Stack>
+              ) : (
+                <Stack direction="row" spacing={1.5} alignItems="center">
+                  <Typography>No Price</Typography>
+                  <CreateAskButton />
+                </Stack>
+              )}
+            </Stack>
           </Stack>
         </CardContent>
       </Card>

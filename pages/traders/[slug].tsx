@@ -1,4 +1,20 @@
-import { Button, Divider, Stack, Typography } from '@mui/material';
+import {
+  AddOutlined,
+  EnhancedEncryptionOutlined,
+  Language,
+  MailOutlineRounded,
+  Telegram,
+  Twitter,
+} from '@mui/icons-material';
+import { TabContext, TabList, TabPanel } from '@mui/lab';
+import {
+  Avatar,
+  Button,
+  Link as MuiLink,
+  Stack,
+  Tab,
+  Typography,
+} from '@mui/material';
 import { Box } from '@mui/system';
 import Forecast from 'classes/Forecast';
 import Trader from 'classes/Trader';
@@ -54,56 +70,107 @@ export default function TraderPage() {
     }
   }
 
-  function Header() {
+  function Details() {
     return (
-      <Box>
-        <Typography variant="h4">
-          Trader {addressToShortAddress(slug as string)}
-        </Typography>
-        <Divider sx={{ mt: 2 }} />
-        {trader && (
-          <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
-            <Typography>Reputation:</Typography>
-            <Typography sx={{ mt: 1 }} color="success.main">
-              +{trader.positiveReputation}
-            </Typography>
-            <Typography sx={{ mt: 1 }} color="error.main">
-              -{trader.negativeReputation}
-            </Typography>
-          </Stack>
-        )}
-      </Box>
-    );
-  }
-
-  function ForecastsPosted() {
-    return (
-      <Box sx={{ mt: 6 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Typography variant="h5">Forecasts posted by trader</Typography>
-          {account?.toLowerCase() === (slug as string)?.toLowerCase() && (
-            <Button
-              onClick={() =>
-                showDialog?.(<ForecastPostDialog onClose={closeDialog} />)
-              }
-              variant="outlined"
-            >
-              Post new
-            </Button>
-          )}
+      <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+        {/* Left part with avatar */}
+        <Box sx={{ mt: 1 }}>
+          <Avatar
+            sx={{ bgcolor: '#FFFFFF', width: 56, height: 56, fontSize: 32 }}
+          >
+            🧑‍💼
+          </Avatar>
         </Box>
-        <Divider sx={{ mt: 2 }} />
-        <ForecastList forecasts={forecastsPosted} sx={{ mt: 1 }} />
+        {/* Righ part */}
+        <Box sx={{ ml: 3 }}>
+          {/* Address and reputation */}
+          <Stack direction="row" spacing={2} alignItems="center">
+            <Typography variant="h4">
+              Trader <b>{addressToShortAddress(slug as string)}</b>
+            </Typography>
+            {trader && (
+              <>
+                <Typography color="success.main" variant="h6">
+                  <b>👍{trader.positiveReputation}</b>
+                </Typography>
+                <Typography color="error.main" variant="h6">
+                  <b>👎{trader.negativeReputation}</b>
+                </Typography>
+              </>
+            )}
+          </Stack>
+          {/* Links */}
+          {/* TODO: Use real links */}
+          <Stack direction="row" spacing={2} sx={{ mt: 1 }}>
+            <MuiLink href="#" target="_blank">
+              <MailOutlineRounded />
+            </MuiLink>
+            <MuiLink href="#" target="_blank">
+              <Language />
+            </MuiLink>
+            <MuiLink href="#" target="_blank">
+              <Twitter />
+            </MuiLink>
+            <MuiLink href="#" target="_blank">
+              <Telegram />
+            </MuiLink>
+          </Stack>
+        </Box>
       </Box>
     );
   }
 
-  function ForecastsOwned() {
+  function Forecasts() {
+    const [tabValue, setTabValue] = useState('1');
+
+    function handleChange(_: any, newTabValue: any) {
+      setTabValue(newTabValue);
+    }
+
     return (
-      <Box sx={{ mt: 6 }}>
-        <Typography variant="h5">Forecasts owned by trader</Typography>
-        <Divider sx={{ mt: 2 }} />
-        <ForecastList forecasts={forecastsOwned} sx={{ mt: 1 }} />
+      <Box sx={{ width: '100%', mt: 4 }}>
+        <TabContext value={tabValue}>
+          <TabList
+            onChange={handleChange}
+            variant="scrollable"
+            scrollButtons="auto"
+            sx={{
+              borderBottom: 1,
+              borderColor: 'divider',
+              mb: 1,
+              maxWidth: 'calc(100vw - 32px)',
+            }}
+          >
+            <Tab label="Posted Forecasts" value="1" />
+            <Tab label="Owned Forecasts" value="2" />
+          </TabList>
+          {/* Posted forecasts */}
+          <TabPanel value="1" sx={{ px: 0 }}>
+            {account?.toLowerCase() === (slug as string)?.toLowerCase() && (
+              <Box sx={{ mb: 4 }}>
+                {/* TODO: Implement this button */}
+                <Button variant="contained" startIcon={<AddOutlined />}>
+                  Post New
+                </Button>
+                <Button
+                  variant="outlined"
+                  startIcon={<EnhancedEncryptionOutlined />}
+                  sx={{ ml: 2 }}
+                  onClick={() =>
+                    showDialog?.(<ForecastPostDialog onClose={closeDialog} />)
+                  }
+                >
+                  Post New Encrypted
+                </Button>
+              </Box>
+            )}
+            <ForecastList forecasts={forecastsPosted} />
+          </TabPanel>
+          {/* Owned forecasts */}
+          <TabPanel value="2" sx={{ px: 0 }}>
+            <ForecastList forecasts={forecastsOwned} />
+          </TabPanel>
+        </TabContext>
       </Box>
     );
   }
@@ -117,9 +184,8 @@ export default function TraderPage() {
 
   return (
     <Layout>
-      <Header />
-      <ForecastsPosted />
-      <ForecastsOwned />
+      <Details />
+      <Forecasts />
     </Layout>
   );
 }
