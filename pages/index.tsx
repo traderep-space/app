@@ -1,15 +1,19 @@
-import { Link as MuiLink, Stack, Typography } from '@mui/material';
+import { Button, Link as MuiLink, Stack, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import Layout from 'components/layout/Layout';
+import { Web3Context } from 'context/web3';
 import BlockchainIcon from 'icons/BlockchainIcon';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Image from 'next/image';
+import Link from 'next/link';
+import { useContext } from 'react';
 
 /**
  * Home page.
  */
 export default function HomePage() {
+  const { account, connectWallet } = useContext(Web3Context);
   const { t } = useTranslation('common');
 
   function scrollTo(elementId: string) {
@@ -33,6 +37,7 @@ export default function HomePage() {
           display: 'flex',
           flexDirection: { xs: 'column', md: 'row' },
           mt: { xs: 0, md: 12 },
+          alignItems: { md: 'center' },
         }}
       >
         {/* Text and button */}
@@ -70,6 +75,24 @@ export default function HomePage() {
           <Typography variant="h6" color="text.secondary" sx={{ mt: 1.5 }}>
             {t('page-home-subtitle')}
           </Typography>
+          {/* Button */}
+          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}>
+            {account ? (
+              <Link href="/traders">
+                <Button variant="contained" sx={{ px: 5, py: 1.5 }}>
+                  Browse traders
+                </Button>
+              </Link>
+            ) : (
+              <Button
+                variant="contained"
+                sx={{ px: 5, py: 1.5 }}
+                onClick={() => connectWallet?.()}
+              >
+                Connect Wallet
+              </Button>
+            )}
+          </Box>
         </Box>
         {/* Image */}
         <Box sx={{ flex: 1, mt: { xs: 4, md: 0 } }}>
@@ -89,7 +112,6 @@ export default function HomePage() {
   return (
     <Layout>
       <Header />
-      <Box sx={{ height: 48 }} />
     </Layout>
   );
 }
