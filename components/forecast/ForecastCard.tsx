@@ -115,7 +115,7 @@ export default function ForecastCard({ forecast }: any) {
   }
 
   useEffect(() => {
-    if (forecast) {
+    if (account && forecast) {
       setAsk(null);
       getAsk(
         process.env.NEXT_PUBLIC_FORECAST_CONTRACT_ADDRESS || '',
@@ -125,7 +125,7 @@ export default function ForecastCard({ forecast }: any) {
         .catch((error: any) => handleError(error, true));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [forecast]);
+  }, [forecast, account]);
 
   if (forecast) {
     return (
