@@ -73,9 +73,7 @@ export default function ForecastPostDialog({ isClose, onClose }: any) {
   async function submit({ formData }: any) {
     try {
       setIsLoading(true);
-      // TODO: Encrypt data and post to ipfs
-      const tokenUri = 'ipfs://...';
-      await postForecast(tokenUri);
+      await postForecast(formData);
       showToastSuccess('Success! Data will be updated soon');
       close();
     } catch (error: any) {

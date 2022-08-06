@@ -4,45 +4,25 @@
 export default function useLitProtocol() {
   const LitJsSdk = require('lit-js-sdk');
 
-  /**
-   * TODO: Move hardcoded values to function params
-   */
-  let encrypt = async function () {
-    // Define auth sig
+  let encrypt = async function (tokenId: string, rawString: string) {
+    // Get auth sig
     const authSig = await LitJsSdk.checkAndSignAuthMessage({
-      chain: 'mumbai',
+      chain: process.env.NEXT_PUBLIC_LIT_PROTOCOL_CHAIN,
     });
-
-    // Define control conditions
-    const accessControlConditions = [
-      {
-        contractAddress: '',
-        standardContractType: '',
-        chain: 'mumbai',
-        method: 'eth_getBalance',
-        parameters: [':userAddress', 'latest'],
-        returnValueTest: {
-          comparator: '>=',
-          value: '1000000000000', // 0.000001 ETH
-        },
-      },
-    ];
-
     // Encrypt content
     const { encryptedString, symmetricKey } = await LitJsSdk.encryptString(
-      'this is a secret message',
+      rawString,
     );
-
-    // Saving the encrypted content to the Lit nodes
+    // Saving the encrypted string to the Lit nodes
     const encryptedSymmetricKey = await (
       window as any
     ).litNodeClient.saveEncryptionKey({
-      accessControlConditions,
+      accessControlConditions: getAccessControlConditions(tokenId),
       symmetricKey,
       authSig,
-      chain: 'mumbai',
+      chain: process.env.NEXT_PUBLIC_LIT_PROTOCOL_CHAIN,
     });
-
+    // Return result
     return {
       encryptedString,
       encryptedSymmetricKey: LitJsSdk.uint8arrayToString(
@@ -52,7 +32,49 @@ export default function useLitProtocol() {
     };
   };
 
+  let decrypt = async function (
+    tokenId: string,
+    encryptedString: Blob,
+    encryptedSymmetricKey: string,
+  ) {
+    // Get auth sig
+    const authSig = await LitJsSdk.checkAndSignAuthMessage({
+      chain: process.env.NEXT_PUBLIC_LIT_PROTOCOL_CHAIN,
+    });
+    // Get symmetric key
+    const symmetricKey = await (window as any).litNodeClient.getEncryptionKey({
+      accessControlConditions: getAccessControlConditions(tokenId),
+      toDecrypt: encryptedSymmetricKey,
+      chain: process.env.NEXT_PUBLIC_LIT_PROTOCOL_CHAIN,
+      authSig,
+    });
+    // Decrypt
+    const decryptedString = await LitJsSdk.decryptString(
+      encryptedString,
+      symmetricKey,
+    );
+    // Return
+    return { decryptedString };
+  };
+
   return {
     encrypt,
+    decrypt,
   };
+}
+
+function getAccessControlConditions(tokenId: string) {
+  return [
+    {
+      contractAddress: process.env.NEXT_PUBLIC_FORECAST_CONTRACT_ADDRESS,
+      standardContractType: 'ERC721',
+      chain: process.env.NEXT_PUBLIC_LIT_PROTOCOL_CHAIN,
+      method: 'ownerOf',
+      parameters: [tokenId],
+      returnValueTest: {
+        comparator: '=',
+        value: ':userAddress',
+      },
+    },
+  ];
 }

@@ -105,6 +105,25 @@
     "type": "event"
   },
   {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "tokenURI",
+        "type": "string"
+      }
+    ],
+    "name": "URISet",
+    "type": "event"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -139,6 +158,19 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "create",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -243,25 +275,6 @@
   {
     "inputs": [
       {
-        "internalType": "string",
-        "name": "tokenURI",
-        "type": "string"
-      }
-    ],
-    "name": "post",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "address",
         "name": "from",
         "type": "address"
@@ -324,6 +337,24 @@
       }
     ],
     "name": "setApprovalForAll",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "tknURI",
+        "type": "string"
+      }
+    ],
+    "name": "setURI",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

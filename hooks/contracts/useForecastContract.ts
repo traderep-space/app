@@ -18,14 +18,22 @@ export default function useForecastContract() {
     );
   }
 
-  async function post(tokenUri: string) {
+  async function create() {
     if (!isNetworkChainIdCorrect) {
       throw new WrongNetworkError();
     }
-    return await getContract(provider?.getSigner()).post(tokenUri);
+    return await getContract(provider?.getSigner()).create();
+  }
+
+  async function setUri(tokenId: string, tokenUri: string) {
+    if (!isNetworkChainIdCorrect) {
+      throw new WrongNetworkError();
+    }
+    return await getContract(provider?.getSigner()).setURI(tokenId, tokenUri);
   }
 
   return {
-    post,
+    create,
+    setUri,
   };
 }

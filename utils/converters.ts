@@ -10,3 +10,16 @@ export function addressToShortAddress(address: string): string {
   }
   return shortAddress?.toLowerCase();
 }
+
+export async function blobToBase64(blob: Blob): Promise<string> {
+  return new Promise((resolve, _) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result as any);
+    reader.readAsDataURL(blob);
+  });
+}
+
+export async function base64ToBlob(base64: string): Promise<Blob> {
+  const result = await fetch(base64);
+  return result.blob();
+}
