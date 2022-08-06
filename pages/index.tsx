@@ -3,8 +3,6 @@ import { Box } from '@mui/system';
 import Layout from 'components/layout/Layout';
 import { Web3Context } from 'context/web3';
 import BlockchainIcon from 'icons/BlockchainIcon';
-import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useContext } from 'react';
@@ -14,7 +12,6 @@ import { useContext } from 'react';
  */
 export default function HomePage() {
   const { account, connectWallet } = useContext(Web3Context);
-  const { t } = useTranslation('common');
 
   function scrollTo(elementId: string) {
     const element = document.getElementById(elementId);
@@ -63,17 +60,17 @@ export default function HomePage() {
             >
               <BlockchainIcon sx={{ fontSize: 36 }} />
               <Typography color="primary">
-                {t('page-home-overtitle')}
+                Reputation confirmed by blockchain
               </Typography>
             </Stack>
           </MuiLink>
           {/* Title */}
           <Typography variant="h3" sx={{ mt: { xs: 2, md: 0 } }}>
-            {t('page-home-title')}
+            Start building your reputation
           </Typography>
           {/* Subtitle */}
           <Typography variant="h6" color="text.secondary" sx={{ mt: 1.5 }}>
-            {t('page-home-subtitle')}
+            in the world traders community
           </Typography>
           {/* Button */}
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}>
@@ -114,15 +111,4 @@ export default function HomePage() {
       <Header />
     </Layout>
   );
-}
-
-/**
- * Define localized texts at build time.
- */
-export async function getStaticProps({ locale, nextI18NextConfig }: any) {
-  return {
-    props: {
-      ...(await serverSideTranslations(locale, ['common'], nextI18NextConfig)),
-    },
-  };
 }

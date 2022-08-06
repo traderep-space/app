@@ -1,7 +1,6 @@
 import { ThemeProvider } from '@mui/material';
 import { DialogProvider } from 'context/dialog';
 import { Web3Provider } from 'context/web3';
-import { appWithTranslation } from 'next-i18next';
 import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
 import NextNProgress from 'nextjs-progressbar';
@@ -71,4 +70,4 @@ function App({ Component, pageProps }: AppProps) {
   );
 }
 
-export default appWithTranslation(App);
+export default App;

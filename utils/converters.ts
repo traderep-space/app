@@ -3,7 +3,7 @@
  */
 export function addressToShortAddress(address: string): string {
   let shortAddress = address;
-  if (address.length > 10) {
+  if (address?.length > 10) {
     shortAddress = `${address.substring(0, 6)}...${address.substring(
       address.length - 4,
     )}`;

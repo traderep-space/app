@@ -11,7 +11,6 @@ import {
 } from '@mui/material';
 import { Box } from '@mui/system';
 import { Web3Context } from 'context/web3';
-import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { MouseEvent, useContext, useState } from 'react';
 import { addressToShortAddress } from 'utils/converters';
@@ -21,7 +20,6 @@ import { addressToShortAddress } from 'utils/converters';
  */
 export default function Navigation() {
   const { account, connectWallet } = useContext(Web3Context);
-  const { t } = useTranslation('common');
 
   return (
     <AppBar
@@ -48,7 +46,7 @@ export default function Navigation() {
               textDecoration: 'none',
             }}
           >
-            {t('app-title')}
+            TradeRep Metabolism
           </Typography>
           {/* Mobile logo */}
           <Typography
@@ -65,7 +63,7 @@ export default function Navigation() {
               textDecoration: 'none',
             }}
           >
-            {t('app-title')}
+            TradeRep Metabolism
           </Typography>
           {/* Connect wallet button */}
           {!account && (

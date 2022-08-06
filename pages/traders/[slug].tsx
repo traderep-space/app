@@ -10,7 +10,6 @@ import { Web3Context } from 'context/web3';
 import useError from 'hooks/useError';
 import useForecast from 'hooks/useForecast';
 import useTrader from 'hooks/useTrader';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
 import { addressToShortAddress } from 'utils/converters';
@@ -82,7 +81,7 @@ export default function TraderPage() {
       <Box sx={{ mt: 6 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Typography variant="h5">Forecasts posted by trader</Typography>
-          {account?.toLowerCase() === (slug as string).toLowerCase() && (
+          {account?.toLowerCase() === (slug as string)?.toLowerCase() && (
             <Button
               onClick={() =>
                 showDialog?.(<ForecastPostDialog onClose={closeDialog} />)
@@ -123,15 +122,4 @@ export default function TraderPage() {
       <ForecastsOwned />
     </Layout>
   );
-}
-
-/**
- * Define localized texts before rendering the page.
- */
-export async function getServerSideProps({ locale }: any) {
-  return {
-    props: {
-      ...(await serverSideTranslations(locale, ['common'])),
-    },
-  };
 }

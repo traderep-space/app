@@ -1,7 +1,6 @@
 import { Container, Toolbar } from '@mui/material';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
-import { useTranslation } from 'next-i18next';
 import Head from 'next/head';
 import Footer from './Footer';
 import Navigation from './Navigation';
@@ -10,13 +9,13 @@ import Navigation from './Navigation';
  * Component with layout.
  */
 export default function Layout({ children }: any) {
-  const { t } = useTranslation('common');
-
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
       <CssBaseline />
       <Head>
-        <title>{t('page-title-default')}</title>
+        <title>
+          TradeRep Metabolism — Trader reputation confirmed by blockchain
+        </title>
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
       <Navigation />

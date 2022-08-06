@@ -1,13 +1,13 @@
-import { useTranslation } from 'next-i18next';
 import { Html, Head, Main, NextScript } from 'next/document';
 
 function Document() {
-  const { t } = useTranslation('common');
-
   return (
     <Html>
       <Head>
-        <meta name="description" content={t('app-description')} />
+        <meta
+          name="description"
+          content="TradeRep Metabolism — Trader reputation confirmed by blockchain"
+        />
         <link rel="icon" href="/favicon.ico" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link

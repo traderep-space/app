@@ -1,4 +1,3 @@
-const { i18n } = require('./next-i18next.config');
 // Fix for Zora (https://stackoverflow.com/a/70492617)
 const withTM = require('next-transpile-modules')(['@zoralabs/v3']);
 
@@ -6,7 +5,6 @@ const withTM = require('next-transpile-modules')(['@zoralabs/v3']);
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  i18n,
   webpack: (config) => {
     // Fix for rjsf (https://github.com/rjsf-team/react-jsonschema-form/issues/2762)
     config.resolve.fallback = {
