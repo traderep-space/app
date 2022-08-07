@@ -1,10 +1,12 @@
 import {
+  Avatar,
   Card,
   CardContent,
   Link as MuiLink,
   Stack,
   Typography,
 } from '@mui/material';
+import { Box } from '@mui/system';
 import Link from 'next/link';
 import { addressToShortAddress } from 'utils/converters';
 
@@ -16,22 +18,36 @@ export default function TraderCard({ trader }: any) {
     return (
       <Card variant="outlined">
         <CardContent sx={{ p: '10px !important' }}>
-          <Stack direction="row" spacing={1}>
-            <Typography>Trader:</Typography>
-            <Link href={`/traders/${trader.id}`} passHref>
-              <MuiLink underline="none">
-                <Typography>{addressToShortAddress(trader.id)}</Typography>
-              </MuiLink>
-            </Link>
-          </Stack>
-          <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
-            <Typography>Reputation:</Typography>
-            <Typography sx={{ mt: 1 }} color="success.main">
-              +{trader.positiveReputation}
-            </Typography>
-            <Typography sx={{ mt: 1 }} color="error.main">
-              -{trader.negativeReputation}
-            </Typography>
+          <Stack direction="row" spacing={1} alignItems="center">
+            <Avatar
+              sx={{
+                bgcolor: '#FFFFFF',
+                width: 54,
+                height: 54,
+                fontSize: 38,
+                mr: 1.2,
+              }}
+            >
+              🧑‍💼
+            </Avatar>
+            <Box>
+              <Stack direction="row" spacing={1}>
+                <Typography>Trader</Typography>
+                <Link href={`/traders/${trader.id}`} passHref>
+                  <MuiLink underline="none">
+                    <Typography>{addressToShortAddress(trader.id)}</Typography>
+                  </MuiLink>
+                </Link>
+              </Stack>
+              <Stack direction="row" spacing={1} sx={{ mt: 0.4 }}>
+                <Typography color="success.main">
+                  <b>👍{trader.positiveReputation}</b>
+                </Typography>
+                <Typography color="error.main">
+                  <b>👎{trader.negativeReputation}</b>
+                </Typography>
+              </Stack>
+            </Box>
           </Stack>
         </CardContent>
       </Card>
