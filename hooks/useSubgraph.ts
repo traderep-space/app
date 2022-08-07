@@ -88,10 +88,12 @@ function getFindForecastQuery(
   let authorFilter = author ? `author: "${author.toLowerCase()}"` : '';
   let ownerFilter = owner ? `owner: "${owner.toLowerCase()}"` : '';
   let filterParams = `where: {${idsFilter}, ${authorFilter}, ${ownerFilter}}`;
+  let sortParams = `orderBy: createdDate, orderDirection: desc`;
   let paginationParams = `first: ${first}, skip: ${skip}`;
   return `{
-    forecasts(${filterParams}, ${paginationParams}) {
+    forecasts(${filterParams}, ${sortParams}, ${paginationParams}) {
       id
+      createdDate
       author
       owner
       uri

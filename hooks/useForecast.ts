@@ -99,6 +99,7 @@ export default function useForecast() {
 function convertSubgraphForecastToForecast(subgraphForecast: any) {
   return new Forecast(
     subgraphForecast.id,
+    subgraphForecast.createdDate,
     subgraphForecast.author,
     subgraphForecast.owner,
     subgraphForecast.uri,

@@ -3,6 +3,7 @@
  */
 export default class Forecast {
   id: string;
+  createdDate: string;
   author: string;
   owner: string;
   uri: string | null;
@@ -11,6 +12,7 @@ export default class Forecast {
 
   constructor(
     id: string,
+    createdDate: string,
     author: string,
     owner: string,
     uri: string | null,
@@ -18,6 +20,7 @@ export default class Forecast {
     isTrue: boolean | null,
   ) {
     this.id = id;
+    this.createdDate = createdDate;
     this.author = author;
     this.owner = owner;
     this.uri = uri;

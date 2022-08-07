@@ -153,6 +153,17 @@ export default function ForecastCard({ forecast }: any) {
                 <OpenDetailsButton />
               </Stack>
             </Stack>
+            {/* Id */}
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Typography color="text.secondary">Created Date</Typography>
+              <Typography>
+                {new Date(forecast.createdDate * 1000).toLocaleString()}
+              </Typography>
+            </Stack>
             {/* Verification status */}
             <Stack
               direction="row"
