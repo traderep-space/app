@@ -13,7 +13,7 @@ export default function Footer() {
         variant="body2"
         sx={{ my: { xs: 8, md: 4 }, textAlign: 'center' }}
       >
-        TradeRep Metabolism — Trader reputation confirmed by blockchain © 2022
+        TradeRep — Trader reputation confirmed by blockchain © 2022
       </Typography>
     </Box>
   );

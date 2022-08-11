@@ -6,7 +6,7 @@ function Document() {
       <Head>
         <meta
           name="description"
-          content="TradeRep Metabolism — Trader reputation confirmed by blockchain"
+          content="TradeRep — Trader reputation confirmed by blockchain"
         />
         <link rel="icon" href="/favicon.ico" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />

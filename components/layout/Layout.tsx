@@ -13,9 +13,7 @@ export default function Layout({ children }: any) {
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
       <CssBaseline />
       <Head>
-        <title>
-          TradeRep Metabolism — Trader reputation confirmed by blockchain
-        </title>
+        <title>TradeRep — Trader reputation confirmed by blockchain</title>
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
       <Navigation />

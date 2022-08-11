@@ -46,7 +46,7 @@ export default function Navigation() {
               textDecoration: 'none',
             }}
           >
-            TradeRep Metabolism
+            TradeRep
           </Typography>
           {/* Mobile logo */}
           <Typography
@@ -63,7 +63,7 @@ export default function Navigation() {
               textDecoration: 'none',
             }}
           >
-            TradeRep Metabolism
+            TradeRep
           </Typography>
           {/* Connect wallet button */}
           {!account && (

@@ -1,8 +1,8 @@
-# TradeRep Metabolism App
+# TradeRep App
 
 An application for traders to build their own reputation on the blockchain and filter out scammers.
 
-🔗 Live Demo - https://traderep-metabolism-app.vercel.app
+🔗 Live Demo - https://traderep-app.vercel.app
 
 ## How it works
 
@@ -12,9 +12,9 @@ An application for traders to build their own reputation on the blockchain and f
 
 ## Project repositories
 
-- App (this repo) - https://github.com/traderep-space/metabolism-app
-- Contracts - https://github.com/traderep-space/metabolism-contracts
-- Subgraph - https://github.com/traderep-space/metabolism-subgraph
+- App - https://github.com/traderep-space/app
+- Contracts - https://github.com/traderep-space/contracts
+- Subgraph - https://github.com/traderep-space/subgraph
 
 ## Stack
 
