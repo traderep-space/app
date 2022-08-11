@@ -31,7 +31,7 @@ export default function useForecast() {
     );
     // Upload encrypted data to IPFS
     const encryptedStringBase64 = await blobToBase64(encryptedString);
-    const { url: tokenUri } = await uploadJsonToIPFS({
+    const { ipfsUrl: tokenUri } = await uploadJsonToIPFS({
       encryptedStringBase64: encryptedStringBase64,
       encryptedSymmetricKey: encryptedSymmetricKey,
     });
@@ -42,7 +42,7 @@ export default function useForecast() {
   let getForecastDetails = async function (id: string) {
     // Load forecast
     const forecast = await getForecast(id);
-    if (!forecast) {
+    if (!forecast || !forecast.uri) {
       return null;
     }
     // Load uri data

@@ -1,44 +1,60 @@
 import axios from 'axios';
 import { create } from 'ipfs-http-client';
+import { Web3Storage } from 'web3.storage';
 
 /**
  * Hook for work with IPFS.
  */
 export default function useIpfs() {
-  const infuraClient = create({
-    url: process.env.NEXT_PUBLIC_INFURA_IPFS_API,
+  const ipfsUrlPrefix = 'ipfs://';
+  const web3Storage = new Web3Storage({
+    token: process.env.NEXT_PUBLIC_WEB3_STORAGE_KEY || '',
+    endpoint: new URL('https://api.web3.storage'),
   });
   const theGraphClient = create({
     url: process.env.NEXT_PUBLIC_THE_GRAPH_IPFS_API,
   });
 
-  let uploadFileToIPFS = async function (file: any) {
-    const created = await infuraClient.add({
-      path: '',
-      content: file,
-    });
-    const cid = created.path;
-    const url = `https://ipfs.infura.io/ipfs/${cid}`;
-    return { cid, url };
-  };
-
-  let uploadJsonToIPFS = async function (json: any) {
+  let uploadJsonToIPFS = async function (json: object) {
     // Upload to the graph for usage in graph queries
     await theGraphClient.add(JSON.stringify(json));
-    // Upload to infura
-    const created = await infuraClient.add(JSON.stringify(json));
-    const cid = created.path;
-    const url = `https://ipfs.infura.io/ipfs/${cid}`;
-    return { cid, url };
+    // Upload to the web3 storage
+    const file = new File([JSON.stringify(json)], '', {
+      type: 'text/plain',
+    });
+    const cid = await web3Storage.put([file], { wrapWithDirectory: false });
+    const ipfsUrl = `${ipfsUrlPrefix}${cid}`;
+    return { cid, ipfsUrl };
   };
 
-  let loadJsonFromIPFS = async function (url: any) {
-    const response = await axios.get(url);
+  let loadJsonFromIPFS = async function (ipfsUrl: string) {
+    const cid = ipfsUrlToCid(ipfsUrl);
+    const httpUrl = cidToHttpUrl(cid);
+    const response = await axios.get(httpUrl);
     if (response.data.errors) {
-      throw new Error(`Error loading json from IPFS: ${response.data.errors}`);
+      throw new Error(
+        `Fail to loading json from IPFS: ${response.data.errors}`,
+      );
     }
     return response.data;
   };
 
-  return { uploadFileToIPFS, uploadJsonToIPFS, loadJsonFromIPFS };
+  /**
+   * Convert url like "ipfs://baf..." to cid "baf...".
+   */
+  let ipfsUrlToCid = function (ipfsUrl: string) {
+    if (!ipfsUrl.startsWith(ipfsUrlPrefix)) {
+      throw new Error(`Fail to converting url to cid for url: ${ipfsUrl}`);
+    }
+    return ipfsUrl.replace(ipfsUrlPrefix, '');
+  };
+
+  /**
+   * Convert cid like "baf..." to http url.
+   */
+  let cidToHttpUrl = function (cid: string) {
+    return `https://${cid}.ipfs.dweb.link`;
+  };
+
+  return { uploadJsonToIPFS, loadJsonFromIPFS, urlToCid: ipfsUrlToCid };
 }
