@@ -18,6 +18,7 @@ export default function useSubgraph() {
   let findForecasts = async function (
     ids?: Array<string>,
     author?: string,
+    notAuthor?: string,
     owner?: string,
     type?: string,
     isVerified?: boolean,
@@ -25,7 +26,16 @@ export default function useSubgraph() {
     skip?: number,
   ) {
     const response = await makeSubgraphQuery(
-      getFindForecastQuery(ids, author, owner, type, isVerified, first, skip),
+      getFindForecastQuery(
+        ids,
+        author,
+        notAuthor,
+        owner,
+        type,
+        isVerified,
+        first,
+        skip,
+      ),
     );
     return response.forecasts;
   };
@@ -80,6 +90,7 @@ function getFindTradersQuery(
 function getFindForecastQuery(
   ids?: Array<string>,
   author?: string,
+  notAuthor?: string,
   owner?: string,
   type?: string,
   isVerified?: boolean,
@@ -90,11 +101,14 @@ function getFindForecastQuery(
     ? `id_in: ["${ids.map((id) => id.toLowerCase()).join('","')}"]`
     : '';
   let authorFilter = author ? `author: "${author.toLowerCase()}"` : '';
+  let notAuthorFilter = notAuthor
+    ? `author_not: "${notAuthor.toLowerCase()}"`
+    : '';
   let ownerFilter = owner ? `owner: "${owner.toLowerCase()}"` : '';
   let typeFilter = type ? `type: "${type}"` : '';
   let isVerifiedFilter =
     isVerified !== undefined ? `isVerified: ${isVerified}` : '';
-  let filterParams = `where: {${idsFilter}, ${authorFilter}, ${ownerFilter}, ${typeFilter}, ${isVerifiedFilter}}`;
+  let filterParams = `where: {${idsFilter}, ${authorFilter}, ${notAuthorFilter}, ${ownerFilter}, ${typeFilter}, ${isVerifiedFilter}}`;
   let sortParams = `orderBy: createdDate, orderDirection: desc`;
   let paginationParams = `first: ${first}, skip: ${skip}`;
   return `{

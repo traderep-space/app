@@ -14,7 +14,7 @@ export default function ForecastList({ forecasts, sx }: any) {
       )}
       {forecasts?.length === 0 && (
         <Grid item xs={12}>
-          <Typography>No Results</Typography>
+          <Typography>No Forecasts</Typography>
         </Grid>
       )}
       {forecasts?.length > 0 && (

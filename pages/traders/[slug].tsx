@@ -177,7 +177,9 @@ function Forecasts(props: {
           .catch((error: any) => handleError(error, true));
       }
       if (props.type === 'bought') {
-        // TODO: Load bought forecasts
+        getForecasts({ notAuthor: props.traderId, owner: props.traderId })
+          .then((forecasts) => setForecasts(forecasts))
+          .catch((error: any) => handleError(error, true));
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

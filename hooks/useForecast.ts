@@ -100,6 +100,7 @@ export default function useForecast() {
   let getForecasts = async function (args: {
     ids?: Array<string>;
     author?: string;
+    notAuthor?: string;
     owner?: string;
     type?: FORECAST_TYPE;
     isVerified?: boolean;
@@ -109,6 +110,7 @@ export default function useForecast() {
     const subgraphForecasts = await findForecasts(
       args.ids,
       args.author,
+      args.notAuthor,
       args.owner,
       args.type,
       args.isVerified,
