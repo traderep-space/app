@@ -13,16 +13,32 @@ import { MuiForm5 as Form } from '@rjsf/material-ui';
 import { LoadingButton } from '@mui/lab';
 import { Save } from '@mui/icons-material';
 import useForecast from 'hooks/useForecast';
+import { FORECAST_TYPE } from 'classes/Forecast';
+
+/**
+ * Fix to support enum names in the schema.
+ *
+ * Details - https://github.com/rjsf-team/react-jsonschema-form/issues/2663#issuecomment-1106698186
+ */
+declare module 'json-schema' {
+  export interface JSONSchema7 {
+    enumNames?: Array<string>;
+  }
+}
 
 /**
  * A dialog for create forecast.
  */
-export default function ForecastPostDialog({ isClose, onClose }: any) {
+export default function ForecastPostDialog(props: {
+  type: FORECAST_TYPE;
+  isClose?: boolean;
+  onClose?: Function;
+}) {
   const { showToastSuccess } = useToast();
   const { handleError } = useError();
-  const { postForecast } = useForecast();
+  const { postPublicForecast, postPrivateForecast } = useForecast();
   const [isLoading, setIsLoading] = useState(false);
-  const [isOpen, setIsOpen] = useState(!isClose);
+  const [isOpen, setIsOpen] = useState(!props.isClose);
   const [formData, setFormData] = useState({});
 
   const schema: JSONSchema7 = {
@@ -32,6 +48,15 @@ export default function ForecastPostDialog({ isClose, onClose }: any) {
       symbol: {
         type: 'string',
         title: 'Symbol',
+        default: 'ETHUSDT',
+        enum: [
+          'ETHUSDT',
+          'BTCUSDT',
+          'BNBUSDT',
+          'XRPUSDT',
+          'ADAUSDT',
+          'SOLUSDT',
+        ],
       },
       orderPrice: {
         type: 'string',
@@ -53,13 +78,13 @@ export default function ForecastPostDialog({ isClose, onClose }: any) {
       'ui:placeholder': 'ETHUSDT',
     },
     orderPrice: {
-      'ui:placeholder': '1800',
+      'ui:placeholder': '1850',
     },
     tpPrice: {
-      'ui:placeholder': '1900',
+      'ui:placeholder': '1910',
     },
     slPrice: {
-      'ui:placeholder': '1700',
+      'ui:placeholder': '1790',
     },
   };
 
@@ -67,14 +92,18 @@ export default function ForecastPostDialog({ isClose, onClose }: any) {
     setFormData({});
     setIsLoading(false);
     setIsOpen(false);
-    onClose();
+    props.onClose?.();
   }
 
   async function submit({ formData }: any) {
     try {
       setFormData(formData);
       setIsLoading(true);
-      await postForecast(formData);
+      if (props.type === FORECAST_TYPE.public) {
+        await postPublicForecast(formData.symbol, formData);
+      } else {
+        await postPrivateForecast(formData.symbol, formData);
+      }
       showToastSuccess('Success! Data will be updated soon');
       close();
     } catch (error: any) {
@@ -114,7 +143,7 @@ export default function ForecastPostDialog({ isClose, onClose }: any) {
                 <Button variant="contained" type="submit">
                   Post
                 </Button>
-                <Button variant="outlined" onClick={onClose}>
+                <Button variant="outlined" onClick={close}>
                   Cancel
                 </Button>
               </>

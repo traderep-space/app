@@ -18,6 +18,13 @@ export default function useForecastContract() {
     );
   }
 
+  async function createWithUri(tokenUri: string) {
+    if (!isNetworkChainIdCorrect) {
+      throw new WrongNetworkError();
+    }
+    return await getContract(provider?.getSigner()).createWithURI(tokenUri);
+  }
+
   async function create() {
     if (!isNetworkChainIdCorrect) {
       throw new WrongNetworkError();
@@ -40,6 +47,7 @@ export default function useForecastContract() {
   }
 
   return {
+    createWithUri,
     create,
     setUri,
     verify,

@@ -5,43 +5,58 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
+import Forecast, { FORECAST_TYPE } from 'classes/Forecast';
 import useError from 'hooks/useError';
 import useForecast from 'hooks/useForecast';
 import { useEffect, useState } from 'react';
 
+const LitJsSdk = require('lit-js-sdk');
+
 /**
- * A dialog to display forecast details.
+ * A dialog to display forecast params.
  */
-export default function ForecastDetailsDialog({
-  forecast,
-  isClose,
-  onClose,
-}: any) {
+export default function ForecastParamsDialog(props: {
+  forecast: Forecast;
+  isClose?: boolean;
+  onClose?: Function;
+}) {
   const { handleError } = useError();
-  const { getForecastDetails } = useForecast();
-  const [forecastDetails, setForecastDetails] = useState<any>(null);
+  const { getForecastParams } = useForecast();
+  const [forecastParams, setForecastParams] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [isOpen, setIsOpen] = useState(!isClose);
+  const [isOpen, setIsOpen] = useState(!props.isClose);
+
+  async function loadData() {
+    try {
+      setIsLoading(true);
+      setForecastParams(null);
+      // Check auth sig for lit protocol
+      if (props.forecast.type === FORECAST_TYPE.private) {
+        await LitJsSdk.checkAndSignAuthMessage({
+          chain: process.env.NEXT_PUBLIC_LIT_PROTOCOL_CHAIN,
+        });
+      }
+      // Load forecast params
+      setForecastParams(await getForecastParams(props.forecast.id));
+    } catch (error: any) {
+      handleError(error, true);
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   async function close() {
     setIsLoading(false);
     setIsOpen(false);
-    onClose();
+    props.onClose?.();
   }
 
   useEffect(() => {
-    if (forecast) {
-      setIsLoading(true);
-      getForecastDetails(forecast.id)
-        .then((forecastDetails) => setForecastDetails(forecastDetails))
-        .catch((error: any) => {
-          handleError(error, true);
-          close();
-        })
-        .finally(() => setIsLoading(false));
+    if (props.forecast) {
+      loadData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [forecast]);
+  }, [props.forecast]);
 
   return (
     <Dialog
@@ -50,32 +65,32 @@ export default function ForecastDetailsDialog({
       maxWidth="xs"
       fullWidth
     >
-      <DialogTitle>Forecast #{forecast.id}</DialogTitle>
+      <DialogTitle>Forecast #{props.forecast.id}</DialogTitle>
       <DialogContent>
         {isLoading ? (
           <Typography>Loading...</Typography>
-        ) : forecastDetails ? (
+        ) : forecastParams ? (
           <Stack spacing={1}>
             {/* Symbol */}
             <Stack direction="row" justifyContent="space-between">
               <Typography color="text.secondary">Symbol</Typography>
-              <Typography>{forecastDetails.symbol}</Typography>
+              <Typography>{forecastParams.symbol}</Typography>
             </Stack>
             <Stack direction="row" justifyContent="space-between">
               <Typography color="text.secondary">Order Price</Typography>
-              <Typography>{forecastDetails.orderPrice}</Typography>
+              <Typography>{forecastParams.orderPrice}</Typography>
             </Stack>
             <Stack direction="row" justifyContent="space-between">
               <Typography color="text.secondary">Take Profie Price</Typography>
-              <Typography>{forecastDetails.tpPrice}</Typography>
+              <Typography>{forecastParams.tpPrice}</Typography>
             </Stack>
             <Stack direction="row" justifyContent="space-between">
               <Typography color="text.secondary">Stop Loss Price</Typography>
-              <Typography>{forecastDetails.slPrice}</Typography>
+              <Typography>{forecastParams.slPrice}</Typography>
             </Stack>
           </Stack>
         ) : (
-          <></>
+          <Typography>No params</Typography>
         )}
       </DialogContent>
     </Dialog>

@@ -1,7 +1,7 @@
 import {
   AddOutlined,
-  EnhancedEncryptionOutlined,
   Language,
+  LockOutlined,
   MailOutlineRounded,
   Telegram,
   Twitter,
@@ -16,7 +16,7 @@ import {
   Typography,
 } from '@mui/material';
 import { Box } from '@mui/system';
-import Forecast from 'classes/Forecast';
+import Forecast, { FORECAST_TYPE } from 'classes/Forecast';
 import Trader from 'classes/Trader';
 import ForecastList from 'components/forecast/ForecastList';
 import ForecastPostDialog from 'components/forecast/ForecastPostDialog';
@@ -34,158 +34,192 @@ import { addressToShortAddress } from 'utils/converters';
  * Trader page.
  */
 export default function TraderPage() {
-  const { account } = useContext(Web3Context);
-  const { showDialog, closeDialog } = useContext(DialogContext);
   const router = useRouter();
   const { slug } = router.query;
-  const { handleError } = useError();
-  const { getTrader } = useTrader();
-  const { getForecasts } = useForecast();
-  const [trader, setTrader] = useState<Trader | null>(null);
-  const [forecastsPosted, setForecastsPosted] =
-    useState<Array<Forecast> | null>(null);
-  const [forecastsOwned, setForecastsOwned] = useState<Array<Forecast> | null>(
-    null,
-  );
-
-  async function loadData() {
-    try {
-      // Clear states
-      setTrader(null);
-      setForecastsPosted(null);
-      setForecastsOwned(null);
-      // Load data
-      const trader = await getTrader(slug as string);
-      const forecastsPosted = await getForecasts(undefined, slug as string);
-      const forecastsOwned = await getForecasts(
-        undefined,
-        undefined,
-        slug as string,
-      );
-      setTrader(trader);
-      setForecastsPosted(forecastsPosted);
-      setForecastsOwned(forecastsOwned);
-    } catch (error: any) {
-      handleError(error, true);
-    }
-  }
-
-  function Details() {
-    return (
-      <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-        {/* Left part with avatar */}
-        <Box sx={{ mt: 1 }}>
-          <Avatar
-            sx={{ bgcolor: '#FFFFFF', width: 56, height: 56, fontSize: 32 }}
-          >
-            🧑‍💼
-          </Avatar>
-        </Box>
-        {/* Righ part */}
-        <Box sx={{ ml: 3 }}>
-          {/* Address and reputation */}
-          <Stack direction="row" spacing={2} alignItems="center">
-            <Typography variant="h4">
-              Trader <b>{addressToShortAddress(slug as string)}</b>
-            </Typography>
-            {trader && (
-              <>
-                <Typography color="success.main" variant="h6">
-                  <b>👍{trader.positiveReputation}</b>
-                </Typography>
-                <Typography color="error.main" variant="h6">
-                  <b>👎{trader.negativeReputation}</b>
-                </Typography>
-              </>
-            )}
-          </Stack>
-          {/* Links */}
-          {/* TODO: Use real links */}
-          <Stack direction="row" spacing={2} sx={{ mt: 1 }}>
-            <MuiLink href="#" target="_blank">
-              <MailOutlineRounded />
-            </MuiLink>
-            <MuiLink href="#" target="_blank">
-              <Language />
-            </MuiLink>
-            <MuiLink href="#" target="_blank">
-              <Twitter />
-            </MuiLink>
-            <MuiLink href="#" target="_blank">
-              <Telegram />
-            </MuiLink>
-          </Stack>
-        </Box>
-      </Box>
-    );
-  }
-
-  function Forecasts() {
-    const [tabValue, setTabValue] = useState('1');
-
-    function handleChange(_: any, newTabValue: any) {
-      setTabValue(newTabValue);
-    }
-
-    return (
-      <Box sx={{ width: '100%', mt: 4 }}>
-        <TabContext value={tabValue}>
-          <TabList
-            onChange={handleChange}
-            variant="scrollable"
-            scrollButtons="auto"
-            sx={{
-              borderBottom: 1,
-              borderColor: 'divider',
-              mb: 1,
-              maxWidth: 'calc(100vw - 32px)',
-            }}
-          >
-            <Tab label="Posted Forecasts" value="1" />
-            <Tab label="Owned Forecasts" value="2" />
-          </TabList>
-          {/* Posted forecasts */}
-          <TabPanel value="1" sx={{ px: 0 }}>
-            {account?.toLowerCase() === (slug as string)?.toLowerCase() && (
-              <Box sx={{ mb: 4 }}>
-                {/* TODO: Implement this button */}
-                <Button variant="contained" startIcon={<AddOutlined />}>
-                  Post New
-                </Button>
-                <Button
-                  variant="outlined"
-                  startIcon={<EnhancedEncryptionOutlined />}
-                  sx={{ ml: 2 }}
-                  onClick={() =>
-                    showDialog?.(<ForecastPostDialog onClose={closeDialog} />)
-                  }
-                >
-                  Post New Encrypted
-                </Button>
-              </Box>
-            )}
-            <ForecastList forecasts={forecastsPosted} />
-          </TabPanel>
-          {/* Owned forecasts */}
-          <TabPanel value="2" sx={{ px: 0 }}>
-            <ForecastList forecasts={forecastsOwned} />
-          </TabPanel>
-        </TabContext>
-      </Box>
-    );
-  }
-
-  useEffect(() => {
-    if (slug) {
-      loadData();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [account, slug]);
 
   return (
     <Layout>
-      <Details />
-      <Forecasts />
+      <Details traderId={slug as string} />
+      <ForecastsTabs traderId={slug as string} sx={{ mt: 4 }} />
     </Layout>
+  );
+}
+
+function Details(props: { traderId: string; sx?: any }) {
+  const { handleError } = useError();
+  const { getTrader } = useTrader();
+  const [trader, setTrader] = useState<Trader | null>(null);
+
+  useEffect(() => {
+    setTrader(null);
+    if (props.traderId) {
+      getTrader(props.traderId)
+        .then((trader) => setTrader(trader))
+        .catch((error: any) => handleError(error, true));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.traderId]);
+
+  return (
+    <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+      {/* Left part with avatar */}
+      <Box sx={{ mt: 1 }}>
+        <Avatar
+          sx={{ bgcolor: '#FFFFFF', width: 56, height: 56, fontSize: 32 }}
+        >
+          🧑‍💼
+        </Avatar>
+      </Box>
+      {/* Righ part */}
+      <Box sx={{ ml: 3 }}>
+        {/* Address and reputation */}
+        <Stack direction="row" spacing={2} alignItems="center">
+          <Typography variant="h4">
+            Trader <b>{addressToShortAddress(props.traderId)}</b>
+          </Typography>
+          {trader && (
+            <>
+              <Typography color="success.main" variant="h6">
+                <b>👍{trader.positiveReputation}</b>
+              </Typography>
+              <Typography color="error.main" variant="h6">
+                <b>👎{trader.negativeReputation}</b>
+              </Typography>
+            </>
+          )}
+        </Stack>
+        {/* Links */}
+        {/* TODO: Use real links */}
+        <Stack direction="row" spacing={2} sx={{ mt: 1 }}>
+          <MuiLink href="#" target="_blank">
+            <MailOutlineRounded />
+          </MuiLink>
+          <MuiLink href="#" target="_blank">
+            <Language />
+          </MuiLink>
+          <MuiLink href="#" target="_blank">
+            <Twitter />
+          </MuiLink>
+          <MuiLink href="#" target="_blank">
+            <Telegram />
+          </MuiLink>
+        </Stack>
+      </Box>
+    </Box>
+  );
+}
+
+function ForecastsTabs(props: { traderId: string; sx?: any }) {
+  const [tabValue, setTabValue] = useState('1');
+
+  function handleChange(_: any, newTabValue: any) {
+    setTabValue(newTabValue);
+  }
+
+  return (
+    <Box sx={{ width: '100%', ...props.sx }}>
+      <TabContext value={tabValue}>
+        <TabList
+          onChange={handleChange}
+          variant="scrollable"
+          scrollButtons="auto"
+          sx={{
+            borderBottom: 1,
+            borderColor: 'divider',
+            mb: 1,
+            maxWidth: 'calc(100vw - 32px)',
+          }}
+        >
+          <Tab label="Posted Public Forecasts" value="1" />
+          <Tab label="Posted Private Forecasts" value="2" />
+          <Tab label="Bought Forecasts" value="3" />
+        </TabList>
+        <TabPanel value="1" sx={{ px: 0 }}>
+          <Forecasts type="postedPublic" traderId={props.traderId} />
+        </TabPanel>
+        <TabPanel value="2" sx={{ px: 0 }}>
+          <Forecasts type="postedPrivate" traderId={props.traderId} />
+        </TabPanel>
+        <TabPanel value="3" sx={{ px: 0 }}>
+          <Forecasts type="bought" traderId={props.traderId} />
+        </TabPanel>
+      </TabContext>
+    </Box>
+  );
+}
+
+function Forecasts(props: {
+  type: 'postedPublic' | 'postedPrivate' | 'bought';
+  traderId: string;
+  sx?: any;
+}) {
+  const { account } = useContext(Web3Context);
+  const { showDialog, closeDialog } = useContext(DialogContext);
+  const { handleError } = useError();
+  const { getForecasts } = useForecast();
+  const [forecasts, setForecasts] = useState<Array<Forecast> | null>(null);
+
+  useEffect(() => {
+    setForecasts(null);
+    if (props.type && props.traderId) {
+      if (props.type === 'postedPublic') {
+        getForecasts({ author: props.traderId, type: FORECAST_TYPE.public })
+          .then((forecasts) => setForecasts(forecasts))
+          .catch((error: any) => handleError(error, true));
+      }
+      if (props.type === 'postedPrivate') {
+        getForecasts({ author: props.traderId, type: FORECAST_TYPE.private })
+          .then((forecasts) => setForecasts(forecasts))
+          .catch((error: any) => handleError(error, true));
+      }
+      if (props.type === 'bought') {
+        // TODO: Load bought forecasts
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.type, props.traderId]);
+
+  return (
+    <Box>
+      {props.type === 'postedPublic' &&
+        account?.toLowerCase() === props.traderId?.toLowerCase() && (
+          <Box sx={{ mb: 4 }}>
+            <Button
+              variant="contained"
+              startIcon={<AddOutlined />}
+              onClick={() =>
+                showDialog?.(
+                  <ForecastPostDialog
+                    type={FORECAST_TYPE.public}
+                    onClose={closeDialog}
+                  />,
+                )
+              }
+            >
+              Post Public Forecast
+            </Button>
+          </Box>
+        )}
+      {props.type === 'postedPrivate' &&
+        account?.toLowerCase() === props.traderId.toLowerCase() && (
+          <Box sx={{ mb: 4 }}>
+            <Button
+              variant="contained"
+              startIcon={<LockOutlined />}
+              onClick={() =>
+                showDialog?.(
+                  <ForecastPostDialog
+                    type={FORECAST_TYPE.private}
+                    onClose={closeDialog}
+                  />,
+                )
+              }
+            >
+              Post Private Forecast
+            </Button>
+          </Box>
+        )}
+      <ForecastList forecasts={forecasts} />
+    </Box>
   );
 }

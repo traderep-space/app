@@ -1,4 +1,4 @@
-import Forecast from 'classes/Forecast';
+import Forecast, { FORECAST_TYPE } from 'classes/Forecast';
 import { BigNumber } from 'ethers';
 import { base64ToBlob, blobToBase64 } from 'utils/converters';
 import useForecastContract from './contracts/useForecastContract';
@@ -13,9 +13,22 @@ export default function useForecast() {
   const { findForecasts } = useSubgraph();
   const { uploadJsonToIPFS, loadJsonFromIPFS } = useIpfs();
   const { encrypt, decrypt } = useLitProtocol();
-  const { create, setUri, verify } = useForecastContract();
+  const { createWithUri, create, setUri, verify } = useForecastContract();
 
-  let postForecast = async function (params: any) {
+  let postPublicForecast = async function (symbol: string, params: object) {
+    // Define uri data
+    const uriData = {
+      type: FORECAST_TYPE.public,
+      symbol: symbol,
+      params: params,
+    };
+    // Upload data
+    const { ipfsUrl: tokenUri } = await uploadJsonToIPFS(uriData);
+    // Use contract
+    await createWithUri(tokenUri);
+  };
+
+  let postPrivateForecast = async function (symbol: string, params: object) {
     // Create forecast and get token id
     const createTransaction = await create();
     const createReceipt = await createTransaction.wait();
@@ -25,21 +38,25 @@ export default function useForecast() {
     ).toString();
     // Encrypt forecast params
     const paramsString = JSON.stringify(params);
-    const { encryptedString, encryptedSymmetricKey } = await encrypt(
-      tokenId,
-      paramsString,
+    const { encryptedString: encryptedParamsString, encryptedSymmetricKey } =
+      await encrypt(tokenId, paramsString);
+    const encryptedParamsStringBase64 = await blobToBase64(
+      encryptedParamsString,
     );
-    // Upload encrypted data to IPFS
-    const encryptedStringBase64 = await blobToBase64(encryptedString);
-    const { ipfsUrl: tokenUri } = await uploadJsonToIPFS({
-      encryptedStringBase64: encryptedStringBase64,
+    // Define uri data
+    const uriData = {
+      type: FORECAST_TYPE.private,
+      symbol: symbol,
+      encryptedParamsStringBase64: encryptedParamsStringBase64,
       encryptedSymmetricKey: encryptedSymmetricKey,
-    });
-    // Set token uri
+    };
+    // Upload data to
+    const { ipfsUrl: tokenUri } = await uploadJsonToIPFS(uriData);
+    // Use contract
     await setUri(tokenId, tokenUri);
   };
 
-  let getForecastDetails = async function (id: string) {
+  let getForecastParams = async function (id: string) {
     // Load forecast
     const forecast = await getForecast(id);
     if (!forecast || !forecast.uri) {
@@ -47,16 +64,24 @@ export default function useForecast() {
     }
     // Load uri data
     const forecastUriData = await loadJsonFromIPFS(forecast.uri);
-    // Decrypt data
-    const encryptedString = await base64ToBlob(
-      forecastUriData.encryptedStringBase64,
-    );
-    const { decryptedString } = await decrypt(
-      id,
-      encryptedString,
-      forecastUriData.encryptedSymmetricKey,
-    );
-    return JSON.parse(decryptedString);
+    // Define forecast params
+    let forecastParams = {};
+    if (forecast.type === FORECAST_TYPE.public) {
+      forecastParams = forecastUriData.params;
+    }
+    if (forecast.type === FORECAST_TYPE.private) {
+      // Decrypt data for private forecast
+      const encryptedString = await base64ToBlob(
+        forecastUriData.encryptedParamsStringBase64,
+      );
+      const { decryptedString } = await decrypt(
+        id,
+        encryptedString,
+        forecastUriData.encryptedSymmetricKey,
+      );
+      return JSON.parse(decryptedString);
+    }
+    return forecastParams;
   };
 
   let verifyForecast = async function (id: string) {
@@ -64,23 +89,25 @@ export default function useForecast() {
   };
 
   let getForecast = async function (id: string) {
-    const forecasts = await getForecasts([id]);
+    const forecasts = await getForecasts({ ids: [id] });
     return forecasts.length > 0 ? forecasts[0] : null;
   };
 
-  let getForecasts = async function (
-    ids?: Array<string>,
-    author?: string,
-    owner?: string,
-    first = 25,
-    skip = 0,
-  ): Promise<Array<Forecast>> {
+  let getForecasts = async function (args: {
+    ids?: Array<string>;
+    author?: string;
+    owner?: string;
+    type?: FORECAST_TYPE;
+    first?: number;
+    skip?: number;
+  }): Promise<Array<Forecast>> {
     const subgraphForecasts = await findForecasts(
-      ids,
-      author,
-      owner,
-      first,
-      skip,
+      args.ids,
+      args.author,
+      args.owner,
+      args.type,
+      args.first || 25,
+      args.skip || 0,
     );
     return subgraphForecasts.map((subgraphForecast: any) =>
       convertSubgraphForecastToForecast(subgraphForecast),
@@ -88,8 +115,9 @@ export default function useForecast() {
   };
 
   return {
-    postForecast,
-    getForecastDetails,
+    postPublicForecast,
+    postPrivateForecast,
+    getForecastParams,
     verifyForecast,
     getForecast,
     getForecasts,
@@ -103,6 +131,7 @@ function convertSubgraphForecastToForecast(subgraphForecast: any) {
     subgraphForecast.author,
     subgraphForecast.owner,
     subgraphForecast.uri,
+    subgraphForecast.type,
     subgraphForecast.isVerified,
     subgraphForecast.isTrue,
   );

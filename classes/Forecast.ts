@@ -1,3 +1,8 @@
+export enum FORECAST_TYPE {
+  public = 'public',
+  private = 'private',
+}
+
 /**
  * Class for forecast.
  */
@@ -7,6 +12,7 @@ export default class Forecast {
   author: string;
   owner: string;
   uri: string | null;
+  type: FORECAST_TYPE | null;
   isVerified: boolean | null;
   isTrue: boolean | null;
 
@@ -16,6 +22,7 @@ export default class Forecast {
     author: string,
     owner: string,
     uri: string | null,
+    type: FORECAST_TYPE | null,
     isVerified: boolean | null,
     isTrue: boolean | null,
   ) {
@@ -24,6 +31,7 @@ export default class Forecast {
     this.author = author;
     this.owner = owner;
     this.uri = uri;
+    this.type = type;
     this.isVerified = isVerified;
     this.isTrue = isTrue;
   }
