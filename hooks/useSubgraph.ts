@@ -20,11 +20,12 @@ export default function useSubgraph() {
     author?: string,
     owner?: string,
     type?: string,
+    isVerified?: boolean,
     first?: number,
     skip?: number,
   ) {
     const response = await makeSubgraphQuery(
-      getFindForecastQuery(ids, author, owner, type, first, skip),
+      getFindForecastQuery(ids, author, owner, type, isVerified, first, skip),
     );
     return response.forecasts;
   };
@@ -81,6 +82,7 @@ function getFindForecastQuery(
   author?: string,
   owner?: string,
   type?: string,
+  isVerified?: boolean,
   first?: number,
   skip?: number,
 ) {
@@ -90,7 +92,9 @@ function getFindForecastQuery(
   let authorFilter = author ? `author: "${author.toLowerCase()}"` : '';
   let ownerFilter = owner ? `owner: "${owner.toLowerCase()}"` : '';
   let typeFilter = type ? `type: "${type}"` : '';
-  let filterParams = `where: {${idsFilter}, ${authorFilter}, ${ownerFilter}, ${typeFilter}}`;
+  let isVerifiedFilter =
+    isVerified !== undefined ? `isVerified: ${isVerified}` : '';
+  let filterParams = `where: {${idsFilter}, ${authorFilter}, ${ownerFilter}, ${typeFilter}, ${isVerifiedFilter}}`;
   let sortParams = `orderBy: createdDate, orderDirection: desc`;
   let paginationParams = `first: ${first}, skip: ${skip}`;
   return `{

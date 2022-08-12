@@ -39,17 +39,23 @@ export default function useForecastContract() {
     return await getContract(provider?.getSigner()).setURI(tokenId, tokenUri);
   }
 
-  async function verify(tokenId: string) {
+  async function saveVerificationResults(
+    tokenIds: Array<string>,
+    tokenVerificationResults: Array<boolean>,
+  ) {
     if (!isNetworkChainIdCorrect) {
       throw new WrongNetworkError();
     }
-    return await getContract(provider?.getSigner()).verify(tokenId);
+    return await getContract(provider?.getSigner()).saveVerificationResults(
+      tokenIds,
+      tokenVerificationResults,
+    );
   }
 
   return {
     createWithUri,
     create,
     setUri,
-    verify,
+    saveVerificationResults,
   };
 }

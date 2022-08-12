@@ -13,7 +13,8 @@ export default function useForecast() {
   const { findForecasts } = useSubgraph();
   const { uploadJsonToIPFS, loadJsonFromIPFS } = useIpfs();
   const { encrypt, decrypt } = useLitProtocol();
-  const { createWithUri, create, setUri, verify } = useForecastContract();
+  const { createWithUri, create, setUri, saveVerificationResults } =
+    useForecastContract();
 
   let postPublicForecast = async function (symbol: string, params: object) {
     // Define uri data
@@ -84,8 +85,11 @@ export default function useForecast() {
     return forecastParams;
   };
 
-  let verifyForecast = async function (id: string) {
-    return verify(id);
+  let saveForecastVerificationResults = async function (
+    ids: Array<string>,
+    verificationResults: Array<boolean>,
+  ) {
+    return saveVerificationResults(ids, verificationResults);
   };
 
   let getForecast = async function (id: string) {
@@ -98,6 +102,7 @@ export default function useForecast() {
     author?: string;
     owner?: string;
     type?: FORECAST_TYPE;
+    isVerified?: boolean;
     first?: number;
     skip?: number;
   }): Promise<Array<Forecast>> {
@@ -106,6 +111,7 @@ export default function useForecast() {
       args.author,
       args.owner,
       args.type,
+      args.isVerified,
       args.first || 25,
       args.skip || 0,
     );
@@ -118,7 +124,7 @@ export default function useForecast() {
     postPublicForecast,
     postPrivateForecast,
     getForecastParams,
-    verifyForecast,
+    saveForecastVerificationResults,
     getForecast,
     getForecasts,
   };

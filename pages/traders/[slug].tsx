@@ -1,5 +1,6 @@
 import {
   AddOutlined,
+  Check,
   Language,
   LockOutlined,
   MailOutlineRounded,
@@ -20,6 +21,7 @@ import Forecast, { FORECAST_TYPE } from 'classes/Forecast';
 import Trader from 'classes/Trader';
 import ForecastList from 'components/forecast/ForecastList';
 import ForecastPostDialog from 'components/forecast/ForecastPostDialog';
+import ForecastVerifyDialog from 'components/forecast/ForecastVerifyDialog';
 import Layout from 'components/layout/Layout';
 import { DialogContext } from 'context/dialog';
 import { Web3Context } from 'context/web3';
@@ -158,6 +160,8 @@ function Forecasts(props: {
   const { handleError } = useError();
   const { getForecasts } = useForecast();
   const [forecasts, setForecasts] = useState<Array<Forecast> | null>(null);
+  const isAccountOwner =
+    account?.toLowerCase() === props.traderId?.toLowerCase();
 
   useEffect(() => {
     setForecasts(null);
@@ -181,12 +185,14 @@ function Forecasts(props: {
 
   return (
     <Box>
-      {props.type === 'postedPublic' &&
-        account?.toLowerCase() === props.traderId?.toLowerCase() && (
-          <Box sx={{ mb: 4 }}>
+      {/* Actions for public forecasts */}
+      {props.type === 'postedPublic' && (
+        <Box sx={{ mb: 4 }}>
+          {isAccountOwner && (
             <Button
               variant="contained"
               startIcon={<AddOutlined />}
+              sx={{ mr: 2 }}
               onClick={() =>
                 showDialog?.(
                   <ForecastPostDialog
@@ -198,27 +204,42 @@ function Forecasts(props: {
             >
               Post Public Forecast
             </Button>
-          </Box>
-        )}
-      {props.type === 'postedPrivate' &&
-        account?.toLowerCase() === props.traderId.toLowerCase() && (
-          <Box sx={{ mb: 4 }}>
-            <Button
-              variant="contained"
-              startIcon={<LockOutlined />}
-              onClick={() =>
-                showDialog?.(
-                  <ForecastPostDialog
-                    type={FORECAST_TYPE.private}
-                    onClose={closeDialog}
-                  />,
-                )
-              }
-            >
-              Post Private Forecast
-            </Button>
-          </Box>
-        )}
+          )}
+          <Button
+            variant={isAccountOwner ? 'outlined' : 'contained'}
+            startIcon={<Check />}
+            onClick={() =>
+              showDialog?.(
+                <ForecastVerifyDialog
+                  traderId={props.traderId}
+                  onClose={closeDialog}
+                />,
+              )
+            }
+          >
+            Verify Forecasts
+          </Button>
+        </Box>
+      )}
+      {/* Actions for private forecasts */}
+      {props.type === 'postedPrivate' && isAccountOwner && (
+        <Box sx={{ mb: 4 }}>
+          <Button
+            variant="contained"
+            startIcon={<LockOutlined />}
+            onClick={() =>
+              showDialog?.(
+                <ForecastPostDialog
+                  type={FORECAST_TYPE.private}
+                  onClose={closeDialog}
+                />,
+              )
+            }
+          >
+            Post Private Forecast
+          </Button>
+        </Box>
+      )}
       <ForecastList forecasts={forecasts} />
     </Box>
   );
