@@ -1,4 +1,9 @@
 import {
+  AccountBalanceWalletOutlined,
+  InfoOutlined,
+  LockOutlined,
+} from '@mui/icons-material';
+import {
   Button,
   Card,
   CardContent,
@@ -14,7 +19,6 @@ import { ethers } from 'ethers';
 import useError from 'hooks/useError';
 import useToast from 'hooks/useToast';
 import useZora from 'hooks/useZora';
-import { capitalize } from 'lodash';
 import Link from 'next/link';
 import { useContext, useEffect, useState } from 'react';
 import { addressToShortAddress } from 'utils/converters';
@@ -31,16 +35,17 @@ export default function ForecastCard(props: { forecast: Forecast }) {
   const { showToastSuccess } = useToast();
   const { getAsk, fillAsk } = useZora();
   const [ask, setAsk] = useState<any>(null);
+  const isAccountOwner =
+    account?.toLowerCase() === props.forecast.owner?.toLowerCase();
 
-  function CreateAskButton() {
-    if (
-      ask?.askPrice.isZero() &&
-      props.forecast.owner === account.toLowerCase()
-    ) {
+  function AskButton() {
+    // Sell button
+    if (ask?.askPrice.isZero() && isAccountOwner) {
       return (
         <Button
+          startIcon={<AccountBalanceWalletOutlined />}
           size="small"
-          variant="contained"
+          variant="outlined"
           onClick={() =>
             showDialog?.(
               <ForecastCreateAskDialog
@@ -54,19 +59,13 @@ export default function ForecastCard(props: { forecast: Forecast }) {
         </Button>
       );
     }
-    return <></>;
-  }
-
-  function FillAskButton() {
-    if (
-      ask &&
-      !ask.askPrice.isZero() &&
-      props.forecast.owner !== account.toLowerCase()
-    ) {
+    // Buy button
+    if (ask && !ask.askPrice.isZero() && !isAccountOwner) {
       return (
         <Button
+          startIcon={<AccountBalanceWalletOutlined />}
           size="small"
-          variant="contained"
+          variant="outlined"
           onClick={() =>
             fillAsk(
               process.env.NEXT_PUBLIC_FORECAST_CONTRACT_ADDRESS || '',
@@ -86,28 +85,9 @@ export default function ForecastCard(props: { forecast: Forecast }) {
     return <></>;
   }
 
-  function OpenParamsButton() {
-    return (
-      <Button
-        size="small"
-        variant="contained"
-        onClick={() =>
-          showDialog?.(
-            <ForecastParamsDialog
-              forecast={props.forecast}
-              onClose={closeDialog}
-            />,
-          )
-        }
-      >
-        Params
-      </Button>
-    );
-  }
-
   useEffect(() => {
+    setAsk(null);
     if (account && props.forecast) {
-      setAsk(null);
       getAsk(
         process.env.NEXT_PUBLIC_FORECAST_CONTRACT_ADDRESS || '',
         props.forecast.id,
@@ -121,69 +101,41 @@ export default function ForecastCard(props: { forecast: Forecast }) {
   if (props.forecast) {
     return (
       <Card variant="outlined">
-        <CardContent sx={{ p: '10px !important' }}>
-          <Stack spacing={1}>
-            {/* Id */}
-            <Stack
-              direction="row"
-              justifyContent="space-between"
-              alignItems="center"
-            >
-              <Typography color="text.secondary">Forecast</Typography>
-              <Stack direction="row" spacing={1.5} alignItems="center">
-                <Typography>#{props.forecast.id}</Typography>
-                <OpenParamsButton />
-              </Stack>
-            </Stack>
-            {/* Type */}
-            <Stack
-              direction="row"
-              justifyContent="space-between"
-              alignItems="center"
-            >
-              <Typography color="text.secondary">Symbol</Typography>
-              <Typography>{props.forecast.symbol}</Typography>
-            </Stack>
-            {/* Symbol */}
-            <Stack
-              direction="row"
-              justifyContent="space-between"
-              alignItems="center"
-            >
-              <Typography color="text.secondary">Type</Typography>
-              <Typography>{capitalize(props.forecast.type as any)}</Typography>
-            </Stack>
+        <CardContent>
+          {/* Id */}
+          <Typography variant="body2" color="text.secondary">
+            📈 Forecast #<b>{props.forecast.id}</b>
+          </Typography>
+          {/* Symbol */}
+          <Typography variant="h4" sx={{ mt: 1.5 }}>
+            {props.forecast.symbol}
+          </Typography>
+          <Divider sx={{ mt: 1 }} />
+          <Stack spacing={1} sx={{ mt: 2 }}>
             {/* Created date */}
-            <Stack
-              direction="row"
-              justifyContent="space-between"
-              alignItems="center"
-            >
-              <Typography color="text.secondary">Created Date</Typography>
+            <Stack direction="row" justifyContent="space-between">
+              <Typography color="text.secondary">Posted</Typography>
               <Typography>
                 {new Date(
                   (props.forecast.createdDate as any) * 1000,
                 ).toLocaleString()}
               </Typography>
             </Stack>
-            {/* Verification status */}
-            <Stack
-              direction="row"
-              justifyContent="space-between"
-              alignItems="center"
-            >
-              <Typography color="text.secondary">Verification</Typography>
-              {props.forecast.isVerified ? (
-                <Typography>
-                  {props.forecast.isTrue ? '✅ Is True' : '❌ Is Not True'}
-                </Typography>
-              ) : (
-                <Stack direction="row" spacing={1.5} alignItems="center">
-                  <Typography>❓Not Verified</Typography>
-                </Stack>
-              )}
-            </Stack>
-            <Divider />
+            {/* Verification */}
+            {props.forecast.type === FORECAST_TYPE.public && (
+              <Stack direction="row" justifyContent="space-between">
+                <Typography color="text.secondary">Verification</Typography>
+                {props.forecast.isVerified ? (
+                  <Typography>
+                    {props.forecast.isTrue ? '✅ Is True' : '❌ Is Not True'}
+                  </Typography>
+                ) : (
+                  <Stack direction="row" spacing={1.5} alignItems="center">
+                    <Typography>❓Not Verified</Typography>
+                  </Stack>
+                )}
+              </Stack>
+            )}
             {/* Author */}
             <Stack direction="row" justifyContent="space-between">
               <Typography color="text.secondary">Author</Typography>
@@ -208,31 +160,49 @@ export default function ForecastCard(props: { forecast: Forecast }) {
             </Stack>
             {/* Price */}
             {props.forecast.type === FORECAST_TYPE.private && (
-              <>
-                <Divider />
-                <Stack
-                  direction="row"
-                  justifyContent="space-between"
-                  alignItems="center"
-                >
-                  <Typography color="text.secondary">Price</Typography>
-                  {ask && !ask.askPrice.isZero() ? (
-                    <Stack direction="row" spacing={1.5} alignItems="center">
-                      <Typography>
-                        {ethers.utils.formatEther(ask.askPrice)}{' '}
-                        {process.env.NEXT_PUBLIC_NETWORK_CURRENCY_SYMBOL}
-                      </Typography>
-                      <FillAskButton />
-                    </Stack>
-                  ) : (
-                    <Stack direction="row" spacing={1.5} alignItems="center">
-                      <Typography>No Price</Typography>
-                      <CreateAskButton />
-                    </Stack>
-                  )}
-                </Stack>
-              </>
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Typography color="text.secondary">Price</Typography>
+                {ask && !ask.askPrice.isZero() ? (
+                  <Typography>
+                    {ethers.utils.formatEther(ask.askPrice)}{' '}
+                    {process.env.NEXT_PUBLIC_NETWORK_CURRENCY_SYMBOL}
+                  </Typography>
+                ) : (
+                  <Typography>No Price</Typography>
+                )}
+              </Stack>
             )}
+          </Stack>
+          {/* Actions */}
+          <Stack direction="row" spacing={1} sx={{ mt: 4 }}>
+            {/* Show params button */}
+            <Button
+              startIcon={
+                props.forecast.type === FORECAST_TYPE.private ? (
+                  <LockOutlined />
+                ) : (
+                  <InfoOutlined />
+                )
+              }
+              size="small"
+              variant="outlined"
+              onClick={() =>
+                showDialog?.(
+                  <ForecastParamsDialog
+                    forecast={props.forecast}
+                    onClose={closeDialog}
+                  />,
+                )
+              }
+            >
+              Show Params
+            </Button>
+            {/* Buy and sell button */}
+            {props.forecast.type === FORECAST_TYPE.private && <AskButton />}
           </Stack>
         </CardContent>
       </Card>
