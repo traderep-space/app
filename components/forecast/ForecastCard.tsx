@@ -164,6 +164,15 @@ export default function ForecastCard(props: { forecast: Forecast }) {
               justifyContent="space-between"
               alignItems="center"
             >
+              <Typography color="text.secondary">Symbol</Typography>
+              <Typography>{props.forecast.symbol}</Typography>
+            </Stack>
+            {/* Symbol */}
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+            >
               <Typography color="text.secondary">Type</Typography>
               <Typography>{capitalize(props.forecast.type as any)}</Typography>
             </Stack>

@@ -100,6 +100,7 @@ function getFindForecastQuery(
       author
       owner
       uri
+      symbol
       type
       isVerified
       isTrue

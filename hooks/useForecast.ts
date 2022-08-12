@@ -131,6 +131,7 @@ function convertSubgraphForecastToForecast(subgraphForecast: any) {
     subgraphForecast.author,
     subgraphForecast.owner,
     subgraphForecast.uri,
+    subgraphForecast.symbol,
     subgraphForecast.type,
     subgraphForecast.isVerified,
     subgraphForecast.isTrue,
