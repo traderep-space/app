@@ -1,6 +1,11 @@
 import { Button, Link as MuiLink, Stack, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import Layout from 'components/layout/Layout';
+import {
+  PAGE_HOME_OVERTITLE,
+  PAGE_HOME_SUBTITLE,
+  PAGE_HOME_TITLE,
+} from 'constants/texts';
 import { Web3Context } from 'context/web3';
 import BlockchainIcon from 'icons/BlockchainIcon';
 import Image from 'next/image';
@@ -59,18 +64,16 @@ export default function HomePage() {
               alignItems={{ xs: 'center', md: 'center' }}
             >
               <BlockchainIcon sx={{ fontSize: 36 }} />
-              <Typography color="primary">
-                Reputation confirmed by blockchain
-              </Typography>
+              <Typography color="primary">{PAGE_HOME_OVERTITLE}</Typography>
             </Stack>
           </MuiLink>
           {/* Title */}
           <Typography variant="h3" sx={{ mt: { xs: 2, md: 0 } }}>
-            Start building your reputation
+            {PAGE_HOME_TITLE}
           </Typography>
           {/* Subtitle */}
           <Typography variant="h6" color="text.secondary" sx={{ mt: 1.5 }}>
-            in the world traders community
+            {PAGE_HOME_SUBTITLE}
           </Typography>
           {/* Button */}
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}>

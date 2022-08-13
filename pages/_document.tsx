@@ -1,13 +1,11 @@
+import { APP_DESCRIPTION } from 'constants/texts';
 import { Html, Head, Main, NextScript } from 'next/document';
 
 function Document() {
   return (
     <Html>
       <Head>
-        <meta
-          name="description"
-          content="TradeRep — Trader reputation confirmed by blockchain"
-        />
+        <meta name="description" content={APP_DESCRIPTION} />
         <link rel="icon" href="/favicon.ico" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link

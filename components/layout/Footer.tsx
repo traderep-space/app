@@ -1,5 +1,6 @@
 import { Divider, Typography } from '@mui/material';
 import { Box } from '@mui/system';
+import { FOOTER_DEFAULT } from 'constants/texts';
 
 /**
  * Component with footer.
@@ -13,7 +14,7 @@ export default function Footer() {
         variant="body2"
         sx={{ my: { xs: 8, md: 4 }, textAlign: 'center' }}
       >
-        TradeRep — Trader reputation confirmed by blockchain © 2022
+        {FOOTER_DEFAULT}
       </Typography>
     </Box>
   );

@@ -1,6 +1,7 @@
 import { Container, Toolbar } from '@mui/material';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
+import { PAGE_TITLE_DEFAULT } from 'constants/texts';
 import Head from 'next/head';
 import Footer from './Footer';
 import Navigation from './Navigation';
@@ -13,7 +14,7 @@ export default function Layout({ children }: any) {
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
       <CssBaseline />
       <Head>
-        <title>TradeRep — Trader reputation confirmed by blockchain</title>
+        <title>{PAGE_TITLE_DEFAULT}</title>
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
       <Navigation />
