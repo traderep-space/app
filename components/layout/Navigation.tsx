@@ -17,6 +17,7 @@ import {
 } from '@mui/material';
 import { Box } from '@mui/system';
 import { Web3Context } from 'context/web3';
+import ProjectIcon from 'icons/ProjectIcon';
 import Link from 'next/link';
 import { MouseEvent, useContext, useState } from 'react';
 import { addressToShortAddress } from 'utils/converters';
@@ -38,12 +39,14 @@ export default function Navigation() {
       <Container maxWidth="lg">
         <Toolbar disableGutters>
           {/* Desktop logo */}
+          <ProjectIcon sx={{ fontSize: 38 }} />
           <Typography
-            variant="h6"
+            variant="h5"
             noWrap
             component="a"
             href="/"
             sx={{
+              ml: 0.8,
               mr: 2,
               display: { xs: 'none', md: 'flex' },
               flexGrow: 1,
@@ -61,6 +64,7 @@ export default function Navigation() {
             component="a"
             href="/"
             sx={{
+              ml: 0.8,
               mr: 2,
               display: { xs: 'flex', md: 'none' },
               flexGrow: 1,
