@@ -1,7 +1,11 @@
 import {
   AccountBalanceWalletOutlined,
+  HourglassBottom,
   InfoOutlined,
   LockOutlined,
+  ThumbDown,
+  ThumbUp,
+  TrendingUp,
 } from '@mui/icons-material';
 import {
   Button,
@@ -103,9 +107,12 @@ export default function ForecastCard(props: { forecast: Forecast }) {
       <Card variant="outlined">
         <CardContent>
           {/* Id */}
-          <Typography variant="body2" color="text.secondary">
-            📈 Forecast #<b>{props.forecast.id}</b>
-          </Typography>
+          <Stack direction="row" spacing={0.6} alignItems="center">
+            <TrendingUp sx={{ color: 'text.secondary' }} />
+            <Typography variant="body2" color="text.secondary">
+              Forecast #<b>{props.forecast.id}</b>
+            </Typography>
+          </Stack>
           {/* Symbol */}
           <Typography variant="h4" sx={{ mt: 1.5 }}>
             {props.forecast.symbol}
@@ -125,15 +132,30 @@ export default function ForecastCard(props: { forecast: Forecast }) {
             {props.forecast.type === FORECAST_TYPE.public && (
               <Stack direction="row" justifyContent="space-between">
                 <Typography color="text.secondary">Verification</Typography>
-                {props.forecast.isVerified ? (
-                  <Typography>
-                    {props.forecast.isTrue ? '✅ Is True' : '❌ Is Not True'}
-                  </Typography>
-                ) : (
-                  <Stack direction="row" spacing={1.5} alignItems="center">
-                    <Typography>❓Not Verified</Typography>
-                  </Stack>
-                )}
+                <Stack direction="row" spacing={1} alignItems="center">
+                  {props.forecast.isVerified ? (
+                    props.forecast.isTrue ? (
+                      <>
+                        <ThumbUp sx={{ color: 'success.main', fontSize: 18 }} />
+                        <Typography color="success.main">Is True</Typography>
+                      </>
+                    ) : (
+                      <>
+                        <ThumbDown sx={{ color: 'error.main', fontSize: 18 }} />
+                        <Typography color="error.main">Is Not True</Typography>
+                      </>
+                    )
+                  ) : (
+                    <>
+                      <HourglassBottom
+                        sx={{ color: 'warning.main', fontSize: 18 }}
+                      />
+                      <Typography color="warning.main">
+                        Is Not Verified
+                      </Typography>
+                    </>
+                  )}
+                </Stack>
               </Stack>
             )}
             {/* Author */}

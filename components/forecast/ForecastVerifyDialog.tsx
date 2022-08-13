@@ -1,4 +1,9 @@
-import { Save } from '@mui/icons-material';
+import {
+  Cancel,
+  CheckCircle,
+  HourglassBottom,
+  Save,
+} from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
 import {
   Button,
@@ -124,6 +129,39 @@ export default function ForecastVerifyDialog(props: {
     props.onClose?.();
   }
 
+  function Result(props: {
+    type: 'success' | 'fail' | 'inProgress';
+    value: string;
+  }) {
+    return (
+      <Stack
+        direction="row"
+        spacing={0.6}
+        alignItems="center"
+        justifyContent="flex-end"
+      >
+        {props.type === 'success' && (
+          <>
+            <CheckCircle sx={{ color: 'success.main', fontSize: 18 }} />
+            <Typography color="success.main">{props.value}</Typography>
+          </>
+        )}
+        {props.type === 'fail' && (
+          <>
+            <Cancel sx={{ color: 'error.main', fontSize: 18 }} />
+            <Typography color="error.main">{props.value}</Typography>
+          </>
+        )}
+        {props.type === 'inProgress' && (
+          <>
+            <HourglassBottom sx={{ color: 'warning.main', fontSize: 18 }} />
+            <Typography color="warning.main">{props.value}</Typography>
+          </>
+        )}
+      </Stack>
+    );
+  }
+
   useEffect(() => {
     if (props.traderId) {
       loadData();
@@ -184,36 +222,63 @@ export default function ForecastVerifyDialog(props: {
                       </TableCell>
                       {/* Order price */}
                       <TableCell align="right">
-                        {verification.orderPriceResult ? '✅' : '⌛'}{' '}
-                        {verification.orderPrice}
+                        <Result
+                          value={verification.orderPrice}
+                          type={
+                            verification.orderPriceResult
+                              ? 'success'
+                              : 'inProgress'
+                          }
+                        />
                       </TableCell>
                       {/* Take profit price */}
                       <TableCell align="right">
-                        {verification.tpPriceResult
-                          ? '✅'
-                          : verification.slPriceResult
-                          ? '❌'
-                          : '⌛'}{' '}
-                        {verification.tpPrice}
+                        <Result
+                          value={verification.tpPrice}
+                          type={
+                            verification.tpPriceResult
+                              ? 'success'
+                              : verification.slPriceResult
+                              ? 'fail'
+                              : 'inProgress'
+                          }
+                        />
                       </TableCell>
                       {/* Stop loss price */}
                       <TableCell align="right">
-                        {verification.slPriceResult
-                          ? '✅'
-                          : verification.tpPriceResult
-                          ? '❌'
-                          : '⌛'}{' '}
-                        {verification.slPrice}
+                        <Result
+                          value={verification.slPrice}
+                          type={
+                            verification.slPriceResult
+                              ? 'success'
+                              : verification.tpPriceResult
+                              ? 'fail'
+                              : 'inProgress'
+                          }
+                        />
                       </TableCell>
                       {/* Result */}
                       <TableCell align="right">
-                        {verification.orderPriceResult &&
-                        verification.tpPriceResult
-                          ? '✅ Is True'
-                          : verification.orderPriceResult &&
-                            verification.slPriceResult
-                          ? '❌ Is Not True'
-                          : '⌛ In Progress'}
+                        <Result
+                          value={
+                            verification.orderPriceResult &&
+                            verification.tpPriceResult
+                              ? 'Is True'
+                              : verification.orderPriceResult &&
+                                verification.slPriceResult
+                              ? 'Is Not True'
+                              : 'In Progress'
+                          }
+                          type={
+                            verification.orderPriceResult &&
+                            verification.tpPriceResult
+                              ? 'success'
+                              : verification.orderPriceResult &&
+                                verification.slPriceResult
+                              ? 'fail'
+                              : 'inProgress'
+                          }
+                        />
                       </TableCell>
                     </TableRow>
                   ))}
