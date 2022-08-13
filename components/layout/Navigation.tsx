@@ -1,11 +1,17 @@
-import { AccountCircleRounded } from '@mui/icons-material';
+import {
+  AccountCircleRounded,
+  AlternateEmail,
+  GitHub,
+} from '@mui/icons-material';
 import {
   AppBar,
   Button,
   Container,
   IconButton,
+  Link as MuiLink,
   Menu,
   MenuItem,
+  Stack,
   Toolbar,
   Typography,
 } from '@mui/material';
@@ -29,7 +35,7 @@ export default function Navigation() {
         zIndex: (theme) => theme.zIndex.drawer + 1,
       }}
     >
-      <Container maxWidth="xl">
+      <Container maxWidth="lg">
         <Toolbar disableGutters>
           {/* Desktop logo */}
           <Typography
@@ -65,6 +71,18 @@ export default function Navigation() {
           >
             TradeRep
           </Typography>
+          {/* GitHub Link */}
+          <MuiLink href="https://github.com/traderep-space" target="_blank">
+            <IconButton size="large">
+              <GitHub />
+            </IconButton>
+          </MuiLink>
+          {/* Email link */}
+          <MuiLink href="mailto:traderep.space@gmail.com" target="_blank">
+            <IconButton size="large">
+              <AlternateEmail />
+            </IconButton>
+          </MuiLink>
           {/* Connect wallet button */}
           {!account && (
             <Button
@@ -118,7 +136,12 @@ function AccountMenu(): JSX.Element {
         {/* Trader link */}
         <Link href={`/traders/${account}`}>
           <MenuItem onClick={handleCloseAccountMenu}>
-            <Typography>Trader ({addressToShortAddress(account)})</Typography>
+            <Stack direction="column" spacing={0}>
+              <Typography>My Page</Typography>
+              <Typography color="text.secondary" variant="body2">
+                {addressToShortAddress(account)}
+              </Typography>
+            </Stack>
           </MenuItem>
         </Link>
         {/* Traders link */}

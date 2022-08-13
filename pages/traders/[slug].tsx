@@ -7,8 +7,8 @@ import {
   ModeEditOutlineOutlined,
   PersonOutlineOutlined,
   Telegram,
-  ThumbDownOutlined,
-  ThumbUpOutlined,
+  ThumbDown,
+  ThumbUp,
   Twitter,
 } from '@mui/icons-material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
@@ -127,13 +127,13 @@ function Bio(props: { traderId: string; sx?: any }) {
             <Typography color="success.main">
               <b>{trader?.positiveReputation || 0}</b>
             </Typography>
-            <ThumbUpOutlined sx={{ color: 'success.main' }} />
+            <ThumbUp sx={{ color: 'success.main' }} />
           </Stack>
           <Stack direction="row" spacing={1} alignItems="center">
             <Typography color="error.main">
               <b>{trader?.negativeReputation || 0}</b>
             </Typography>
-            <ThumbDownOutlined sx={{ color: 'error.main' }} />
+            <ThumbDown sx={{ color: 'error.main' }} />
           </Stack>
         </Stack>
       </Box>

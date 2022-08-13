@@ -1,8 +1,4 @@
-import {
-  PersonOutlineOutlined,
-  ThumbDownOutlined,
-  ThumbUpOutlined,
-} from '@mui/icons-material';
+import { PersonOutlineOutlined, ThumbDown, ThumbUp } from '@mui/icons-material';
 import {
   Avatar,
   Card,
@@ -83,25 +79,21 @@ export default function TraderCard(props: { trader: Trader }) {
                 {/* Reputation */}
                 <Stack
                   direction="row"
-                  spacing={1}
+                  spacing={1.6}
                   alignItems="center"
                   sx={{ mt: 1 }}
                 >
                   <Stack direction="row" spacing={0.5} alignItems="center">
-                    <Typography color="success.main">
+                    <Typography color="success.main" variant="body2">
                       <b>{props.trader?.positiveReputation || 0}</b>
                     </Typography>
-                    <ThumbUpOutlined
-                      sx={{ color: 'success.main', fontSize: 18 }}
-                    />
+                    <ThumbUp sx={{ color: 'success.main', fontSize: 18 }} />
                   </Stack>
                   <Stack direction="row" spacing={0.5} alignItems="center">
-                    <Typography color="error.main">
+                    <Typography color="error.main" variant="body2">
                       <b>{props.trader?.negativeReputation || 0}</b>
                     </Typography>
-                    <ThumbDownOutlined
-                      sx={{ color: 'error.main', fontSize: 18 }}
-                    />
+                    <ThumbDown sx={{ color: 'error.main', fontSize: 18 }} />
                   </Stack>
                 </Stack>
               </Box>
