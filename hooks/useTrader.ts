@@ -7,7 +7,7 @@ import useSubgraph from './useSubgraph';
 export default function useTrader() {
   const { findTraders } = useSubgraph();
 
-  let getTrader = async function (id: string) {
+  let getTrader = async function (id: string): Promise<Trader | null> {
     const traders = await getTraders([id]);
     return traders.length > 0 ? traders[0] : null;
   };

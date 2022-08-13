@@ -4,7 +4,11 @@ import {
   Language,
   LockOutlined,
   MailOutlineRounded,
+  ModeEditOutlineOutlined,
+  PersonOutlineOutlined,
   Telegram,
+  ThumbDownOutlined,
+  ThumbUpOutlined,
   Twitter,
 } from '@mui/icons-material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
@@ -12,21 +16,26 @@ import {
   Avatar,
   Button,
   Link as MuiLink,
+  Skeleton,
   Stack,
   Tab,
   Typography,
 } from '@mui/material';
 import { Box } from '@mui/system';
+import { default as BioClass } from 'classes/Bio';
 import Forecast, { FORECAST_TYPE } from 'classes/Forecast';
 import Trader from 'classes/Trader';
+import BioEdidDialog from 'components/bio/BioEditDialog';
 import ForecastList from 'components/forecast/ForecastList';
 import ForecastPostDialog from 'components/forecast/ForecastPostDialog';
 import ForecastVerifyDialog from 'components/forecast/ForecastVerifyDialog';
 import Layout from 'components/layout/Layout';
 import { DialogContext } from 'context/dialog';
 import { Web3Context } from 'context/web3';
+import useBio from 'hooks/useBio';
 import useError from 'hooks/useError';
 import useForecast from 'hooks/useForecast';
+import useIpfs from 'hooks/useIpfs';
 import useTrader from 'hooks/useTrader';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
@@ -41,71 +50,158 @@ export default function TraderPage() {
 
   return (
     <Layout>
-      <Details traderId={slug as string} />
+      <Bio traderId={slug as string} />
       <ForecastsTabs traderId={slug as string} sx={{ mt: 4 }} />
     </Layout>
   );
 }
 
-function Details(props: { traderId: string; sx?: any }) {
+function Bio(props: { traderId: string; sx?: any }) {
+  const { account } = useContext(Web3Context);
+  const { showDialog, closeDialog } = useContext(DialogContext);
   const { handleError } = useError();
+  const { ipfsUrlToHttpUrl } = useIpfs();
   const { getTrader } = useTrader();
+  const { getBio } = useBio();
   const [trader, setTrader] = useState<Trader | null>(null);
+  const [bio, setBio] = useState<BioClass | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const isAccountOwner =
+    account?.toLowerCase() === props.traderId?.toLowerCase();
+
+  async function loadData() {
+    try {
+      setIsLoading(true);
+      setTrader(await getTrader(props.traderId));
+      setBio(await getBio(props.traderId));
+    } catch (error: any) {
+      handleError(error, true);
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   useEffect(() => {
     setTrader(null);
+    setBio(null);
     if (props.traderId) {
-      getTrader(props.traderId)
-        .then((trader) => setTrader(trader))
-        .catch((error: any) => handleError(error, true));
+      loadData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.traderId]);
 
+  if (isLoading) {
+    return (
+      <Box>
+        <Skeleton variant="rectangular" width={320} height={28} />
+        <Skeleton
+          variant="rectangular"
+          width={240}
+          height={28}
+          sx={{ mt: 1 }}
+        />
+      </Box>
+    );
+  }
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-      {/* Left part with avatar */}
-      <Box sx={{ mt: 1 }}>
+      {/* Left part */}
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        {/* Image */}
         <Avatar
-          sx={{ bgcolor: '#FFFFFF', width: 56, height: 56, fontSize: 32 }}
+          sx={{ bgcolor: '#FFFFFF', width: 164, height: 164, borderRadius: 4 }}
+          src={ipfsUrlToHttpUrl(bio?.uriData?.image)}
         >
-          🧑‍💼
+          <PersonOutlineOutlined sx={{ fontSize: 42 }} />
         </Avatar>
+        {/* Reputation */}
+        <Stack direction="row" spacing={2} alignItems="center" sx={{ mt: 2 }}>
+          <Stack direction="row" spacing={1} alignItems="center">
+            <Typography color="success.main">
+              <b>{trader?.positiveReputation || 0}</b>
+            </Typography>
+            <ThumbUpOutlined sx={{ color: 'success.main' }} />
+          </Stack>
+          <Stack direction="row" spacing={1} alignItems="center">
+            <Typography color="error.main">
+              <b>{trader?.negativeReputation || 0}</b>
+            </Typography>
+            <ThumbDownOutlined sx={{ color: 'error.main' }} />
+          </Stack>
+        </Stack>
       </Box>
       {/* Righ part */}
-      <Box sx={{ ml: 3 }}>
-        {/* Address and reputation */}
-        <Stack direction="row" spacing={2} alignItems="center">
+      <Box sx={{ ml: 4 }}>
+        {/* Name and address */}
+        {bio?.uriData?.name ? (
+          <>
+            <Typography variant="h4">{bio.uriData.name}</Typography>
+            <Typography color="text.secondary" variant="body2" sx={{ mt: 0.4 }}>
+              {addressToShortAddress(props.traderId)}
+            </Typography>
+          </>
+        ) : (
           <Typography variant="h4">
-            Trader <b>{addressToShortAddress(props.traderId)}</b>
+            {addressToShortAddress(props.traderId)}
           </Typography>
-          {trader && (
-            <>
-              <Typography color="success.main" variant="h6">
-                <b>👍{trader.positiveReputation}</b>
-              </Typography>
-              <Typography color="error.main" variant="h6">
-                <b>👎{trader.negativeReputation}</b>
-              </Typography>
-            </>
+        )}
+        {/* Description */}
+        {bio?.uriData?.description && (
+          <Typography sx={{ mt: 1 }}>{bio.uriData.description}</Typography>
+        )}
+        {/* Links */}
+        <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+          {bio?.uriData?.email && (
+            <MuiLink href={`mailto:${bio.uriData.email}`} target="_blank">
+              <MailOutlineRounded />
+            </MuiLink>
+          )}
+          {bio?.uriData?.website && (
+            <MuiLink href={bio.uriData.website} target="_blank">
+              <Language />
+            </MuiLink>
+          )}
+          {bio?.uriData?.twitter && (
+            <MuiLink
+              href={`https://twitter.com/${bio.uriData.twitter}`}
+              target="_blank"
+            >
+              <Twitter />
+            </MuiLink>
+          )}
+          {bio?.uriData?.telegram && (
+            <MuiLink
+              href={`https://t.me/${bio.uriData.telegram}`}
+              target="_blank"
+            >
+              <Telegram />
+            </MuiLink>
           )}
         </Stack>
-        {/* Links */}
-        {/* TODO: Use real links */}
-        <Stack direction="row" spacing={2} sx={{ mt: 1 }}>
-          <MuiLink href="#" target="_blank">
-            <MailOutlineRounded />
-          </MuiLink>
-          <MuiLink href="#" target="_blank">
-            <Language />
-          </MuiLink>
-          <MuiLink href="#" target="_blank">
-            <Twitter />
-          </MuiLink>
-          <MuiLink href="#" target="_blank">
-            <Telegram />
-          </MuiLink>
-        </Stack>
+        {/* Owner actions */}
+        {isAccountOwner && (
+          <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+            {/* Edit bio button */}
+            <Button
+              startIcon={<ModeEditOutlineOutlined />}
+              variant="outlined"
+              onClick={() =>
+                showDialog?.(
+                  <BioEdidDialog data={bio?.uriData} onClose={closeDialog} />,
+                )
+              }
+            >
+              Edit Bio
+            </Button>
+          </Stack>
+        )}
       </Box>
     </Box>
   );

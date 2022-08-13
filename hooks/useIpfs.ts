@@ -15,6 +15,12 @@ export default function useIpfs() {
     url: process.env.NEXT_PUBLIC_THE_GRAPH_IPFS_API,
   });
 
+  let uploadFileToIPFS = async function (file: any) {
+    const cid = await web3Storage.put([file], { wrapWithDirectory: false });
+    const ipfsUrl = `${ipfsUrlPrefix}${cid}`;
+    return { cid, ipfsUrl };
+  };
+
   let uploadJsonToIPFS = async function (json: object) {
     // Upload to the graph for usage in graph queries
     await theGraphClient.add(JSON.stringify(json));
@@ -42,7 +48,7 @@ export default function useIpfs() {
   /**
    * Convert url like "ipfs://baf..." to cid "baf...".
    */
-  let ipfsUrlToCid = function (ipfsUrl: string) {
+  let ipfsUrlToCid = function (ipfsUrl: string): string {
     if (!ipfsUrl.startsWith(ipfsUrlPrefix)) {
       throw new Error(`Fail to converting url to cid for url: ${ipfsUrl}`);
     }
@@ -52,9 +58,23 @@ export default function useIpfs() {
   /**
    * Convert cid like "baf..." to http url.
    */
-  let cidToHttpUrl = function (cid: string) {
+  let cidToHttpUrl = function (cid: string): string {
     return `https://${cid}.ipfs.dweb.link`;
   };
 
-  return { uploadJsonToIPFS, loadJsonFromIPFS, urlToCid: ipfsUrlToCid };
+  let ipfsUrlToHttpUrl = function (ipfsUrl: string): string {
+    if (!ipfsUrl) {
+      return '';
+    }
+    return cidToHttpUrl(ipfsUrlToCid(ipfsUrl));
+  };
+
+  return {
+    uploadFileToIPFS,
+    uploadJsonToIPFS,
+    loadJsonFromIPFS,
+    ipfsUrlToCid,
+    cidToHttpUrl,
+    ipfsUrlToHttpUrl,
+  };
 }

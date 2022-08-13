@@ -15,6 +15,17 @@ export default function useSubgraph() {
     return response.traders;
   };
 
+  let findBios = async function (
+    owner?: string,
+    first?: number,
+    skip?: number,
+  ) {
+    const response = await makeSubgraphQuery(
+      getFindBiosQuery(owner, first, skip),
+    );
+    return response.bios;
+  };
+
   let findForecasts = async function (
     ids?: Array<string>,
     author?: string,
@@ -26,7 +37,7 @@ export default function useSubgraph() {
     skip?: number,
   ) {
     const response = await makeSubgraphQuery(
-      getFindForecastQuery(
+      getFindForecastsQuery(
         ids,
         author,
         notAuthor,
@@ -42,6 +53,7 @@ export default function useSubgraph() {
 
   return {
     findTraders,
+    findBios,
     findForecasts,
   };
 }
@@ -87,7 +99,20 @@ function getFindTradersQuery(
   }`;
 }
 
-function getFindForecastQuery(
+function getFindBiosQuery(owner?: string, first?: number, skip?: number) {
+  let ownerFilter = owner ? `owner: "${owner.toLowerCase()}"` : '';
+  let filterParams = `where: {${ownerFilter}}`;
+  let paginationParams = `first: ${first}, skip: ${skip}`;
+  return `{
+    bios(${filterParams}, ${paginationParams}) {
+      id
+      owner
+      uri
+    }
+  }`;
+}
+
+function getFindForecastsQuery(
   ids?: Array<string>,
   author?: string,
   notAuthor?: string,
