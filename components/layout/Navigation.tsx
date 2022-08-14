@@ -49,7 +49,6 @@ export default function Navigation() {
               ml: 0.8,
               mr: 2,
               display: { xs: 'none', md: 'flex' },
-              flexGrow: 1,
               fontWeight: 700,
               color: 'inherit',
               textDecoration: 'none',
@@ -67,13 +66,19 @@ export default function Navigation() {
               ml: 0.8,
               mr: 2,
               display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
               fontWeight: 700,
               color: 'inherit',
               textDecoration: 'none',
             }}
           >
             TradeRep
+          </Typography>
+          <Typography
+            color="text.secondary"
+            variant="body2"
+            sx={{ flexGrow: 1 }}
+          >
+            Pre-Alpha
           </Typography>
           {/* GitHub Link */}
           <MuiLink href="https://github.com/traderep-space" target="_blank">
