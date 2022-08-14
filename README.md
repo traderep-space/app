@@ -1,6 +1,6 @@
 # TradeRep App
 
-An application for traders to build their own reputation on the blockchain and filter out scammers.
+A decentrilized application that helps investors and beginners save money and time by filtering good traders from scammers with a reputation verified by blockchain
 
 🔗 Live Demo - https://traderep-app.vercel.app
 
@@ -18,11 +18,12 @@ An application for traders to build their own reputation on the blockchain and f
 
 ## Stack
 
+- IPFS (Web3.Storage)
 - TypeScript
 - Next.js
 - MUI
 - ethers.js
-- EVM based Smart Contracts
+- Solidity Smart Contracts
 - The Graph
 - Zora (https://zora.co/)
 - Lit Protocol (https://litprotocol.com/)
