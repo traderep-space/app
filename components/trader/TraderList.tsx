@@ -24,7 +24,7 @@ export default function TraderList(props: {
       {props.traders && props.traders.length > 0 && (
         <>
           {props.traders.map((trader: any, index: number) => (
-            <Grid key={index} item xs={12} md={6}>
+            <Grid key={index} item xs={12} sm={6}>
               <TraderCard trader={trader} />
             </Grid>
           ))}
