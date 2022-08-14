@@ -109,9 +109,81 @@ export default function HomePage() {
     );
   }
 
+  function HowItWorks() {
+    function Row({ title, subtitle, image, sx }: any) {
+      return (
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column-reverse', md: 'row-reverse' },
+            mt: 8,
+            alignItems: { xs: 'none', md: 'center' },
+            ...sx,
+          }}
+        >
+          {/* Text */}
+          <Box sx={{ flex: 1, textAlign: 'center', mt: { xs: 1, md: 0 } }}>
+            <Typography variant="h6" sx={{ px: { xs: 0, md: 4 } }}>
+              {title}
+            </Typography>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ px: { xs: 0, md: 12 }, mt: 0.5 }}
+            >
+              {subtitle}
+            </Typography>
+          </Box>
+          {/* Image */}
+          <Box sx={{ flex: 1 }}>
+            <Image
+              src={image}
+              layout="responsive"
+              priority={true}
+              width={1080}
+              height={540}
+              alt="How it works"
+            />
+          </Box>
+        </Box>
+      );
+    }
+
+    return (
+      <Box id="how-it-works" sx={{ mt: 12 }}>
+        {/* Title and subtitle */}
+        <Box sx={{ textAlign: 'center' }}>
+          <Typography variant="h4">How does it work?</Typography>
+          <Typography color="text.secondary" sx={{ mt: 1 }}>
+            Steps that allow to build a trustworthy reputation and filter out
+            scammers.
+          </Typography>
+        </Box>
+        {/* Rows */}
+        <Row
+          title="Send a forecast to the blockchain"
+          subtitle="This way the community will be sure that your market analysis has not been tampered with or recorded retroactively."
+          image="/images/image-how-it-works-1.png"
+        />
+        <Row
+          title="Get reputation"
+          subtitle="A blockchain-based smart contract will verify your forecast. If the market confirms it, your reputation will be raised, otherwise lowered."
+          image="/images/image-how-it-works-2.png"
+          sx={{ flexDirection: { xs: 'column-reverse', md: 'row' } }}
+        />
+        <Row
+          title="Get to the top."
+          subtitle="Together we will determine who understands the market better than anyone else and who is trying to deceive others."
+          image="/images/image-how-it-works-3.png"
+        />
+      </Box>
+    );
+  }
+
   return (
     <Layout>
       <Header />
+      <HowItWorks />
     </Layout>
   );
 }
