@@ -28,13 +28,16 @@ export default function ForecastParamsDialog(props: {
 
   async function loadData() {
     try {
+      setIsOpen(true);
       setIsLoading(true);
       setForecastParams(null);
       // Check auth sig for lit protocol
       if (props.forecast.type === FORECAST_TYPE.private) {
+        setIsOpen(false);
         await LitJsSdk.checkAndSignAuthMessage({
           chain: process.env.NEXT_PUBLIC_LIT_PROTOCOL_CHAIN,
         });
+        setIsOpen(true);
       }
       // Load forecast params
       setForecastParams(await getForecastParams(props.forecast.id));
