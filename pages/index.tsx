@@ -77,21 +77,11 @@ export default function HomePage() {
           </Typography>
           {/* Button */}
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}>
-            {account ? (
-              <Link href="/traders">
-                <Button variant="contained" sx={{ px: 5, py: 1.5 }}>
-                  Browse traders
-                </Button>
-              </Link>
-            ) : (
-              <Button
-                variant="contained"
-                sx={{ px: 5, py: 1.5 }}
-                onClick={() => connectWallet?.()}
-              >
-                Connect Wallet
+            <Link href="/traders">
+              <Button variant="contained" sx={{ px: 5, py: 1.5 }}>
+                Browse traders
               </Button>
-            )}
+            </Link>
           </Box>
         </Box>
         {/* Image */}
