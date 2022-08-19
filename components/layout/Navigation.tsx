@@ -38,7 +38,7 @@ export default function Navigation() {
     >
       <Container maxWidth="lg">
         <Toolbar disableGutters>
-          {/* Desktop logo */}
+          {/* Logo */}
           <ProjectIcon sx={{ fontSize: 38 }} />
           <Typography
             variant="h5"
@@ -54,24 +54,7 @@ export default function Navigation() {
               textDecoration: 'none',
             }}
           >
-            TradeRep
-          </Typography>
-          {/* Mobile logo */}
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href="/"
-            sx={{
-              ml: 0.8,
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              fontWeight: 700,
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            TradeRep
+            TradeRep App
           </Typography>
           <Typography
             color="text.secondary"
