@@ -61,7 +61,7 @@ export default function Navigation() {
             variant="body2"
             sx={{ flexGrow: 1 }}
           >
-            Pre-Alpha
+            Beta
           </Typography>
           {/* GitHub Link */}
           <MuiLink href="https://github.com/traderep-space" target="_blank">
