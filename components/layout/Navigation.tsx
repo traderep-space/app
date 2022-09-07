@@ -31,9 +31,9 @@ export default function Navigation() {
         <Toolbar disableGutters>
           {/* Logo */}
           <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'row' }}>
-            <ProjectIcon sx={{ fontSize: 38 }} />
+            <ProjectIcon sx={{ fontSize: 32 }} />
             <Typography
-              variant="h5"
+              variant="h6"
               noWrap
               component="a"
               href="/"
