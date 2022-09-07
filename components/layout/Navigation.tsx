@@ -1,16 +1,10 @@
-import {
-  AccountCircleRounded,
-  AlternateEmail,
-  GitHub,
-} from '@mui/icons-material';
+import { AccountCircleRounded } from '@mui/icons-material';
 import {
   AppBar,
   Button,
   Container,
   IconButton,
-  Link as MuiLink,
   Menu,
-  MenuItem,
   Stack,
   Toolbar,
   Typography,
@@ -18,7 +12,6 @@ import {
 import { Box } from '@mui/system';
 import { Web3Context } from 'context/web3';
 import ProjectIcon from 'icons/ProjectIcon';
-import Link from 'next/link';
 import { MouseEvent, useContext, useState } from 'react';
 import { addressToShortAddress } from 'utils/converters';
 
@@ -26,8 +19,6 @@ import { addressToShortAddress } from 'utils/converters';
  * Component with navigation.
  */
 export default function Navigation() {
-  const { account, connectWallet } = useContext(Web3Context);
-
   return (
     <AppBar
       color="inherit"
@@ -39,55 +30,29 @@ export default function Navigation() {
       <Container maxWidth="lg">
         <Toolbar disableGutters>
           {/* Logo */}
-          <ProjectIcon sx={{ fontSize: 38 }} />
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href="/"
-            sx={{
-              ml: 0.8,
-              mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontWeight: 700,
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            TradeRep App
-          </Typography>
-          <Typography
-            color="text.secondary"
-            variant="body2"
-            sx={{ flexGrow: 1 }}
-          >
-            Beta
-          </Typography>
-          {/* GitHub Link */}
-          <MuiLink href="https://github.com/traderep-space" target="_blank">
-            <IconButton size="large">
-              <GitHub />
-            </IconButton>
-          </MuiLink>
-          {/* Email link */}
-          <MuiLink href="mailto:traderep.space@gmail.com" target="_blank">
-            <IconButton size="large">
-              <AlternateEmail />
-            </IconButton>
-          </MuiLink>
-          {/* Connect wallet button */}
-          {!account && (
-            <Button
-              variant="contained"
-              onClick={() => {
-                connectWallet?.();
+          <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'row' }}>
+            <ProjectIcon sx={{ fontSize: 38 }} />
+            <Typography
+              variant="h5"
+              noWrap
+              component="a"
+              href="/"
+              sx={{
+                ml: 1,
+                mr: 1,
+                fontWeight: 700,
+                color: 'inherit',
+                textDecoration: 'none',
               }}
             >
-              Connect Wallet
-            </Button>
-          )}
-          {/* Setting menu */}
-          {account && <AccountMenu />}
+              TradeRep App
+            </Typography>
+            <Typography color="text.secondary" variant="body2">
+              Beta
+            </Typography>
+          </Box>
+          {/* Account menu */}
+          <AccountMenu />
         </Toolbar>
       </Container>
     </AppBar>
@@ -95,7 +60,7 @@ export default function Navigation() {
 }
 
 function AccountMenu(): JSX.Element {
-  const { account, disconnectWallet } = useContext(Web3Context);
+  const { account, connectWallet, disconnectWallet } = useContext(Web3Context);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
   function handleOpenAccountMenu(event: MouseEvent<HTMLElement>) {
@@ -125,40 +90,45 @@ function AccountMenu(): JSX.Element {
         open={Boolean(anchorElUser)}
         onClose={handleCloseAccountMenu}
       >
-        {/* Trader link */}
-        <Link href={`/traders/${account}`}>
-          <MenuItem onClick={handleCloseAccountMenu}>
+        {/* Account address */}
+        {account && (
+          <Box sx={{ px: '16px', py: '6px' }}>
             <Stack direction="column" spacing={0}>
-              <Typography>My Page</Typography>
+              <Typography>Account</Typography>
               <Typography color="text.secondary" variant="body2">
                 {addressToShortAddress(account)}
               </Typography>
             </Stack>
-          </MenuItem>
-        </Link>
-        {/* Traders link */}
-        <Link href="/traders">
-          <MenuItem onClick={handleCloseAccountMenu}>
-            <Typography>Traders</Typography>
-          </MenuItem>
-        </Link>
-        {/* Disconnect wallet button */}
+          </Box>
+        )}
+        {/* Connect or disconnect wallet button */}
         <Box
           sx={{
-            pt: '12px',
+            pt: '6px',
             pb: '6px',
             px: '16px',
             display: 'flex',
           }}
         >
-          <Button
-            sx={{ flex: 1 }}
-            variant="contained"
-            size="small"
-            onClick={() => disconnectWallet?.()}
-          >
-            Disconnect Wallet
-          </Button>
+          {account ? (
+            <Button
+              sx={{ flex: 1 }}
+              variant="contained"
+              size="small"
+              onClick={() => disconnectWallet?.()}
+            >
+              Disconnect Wallet
+            </Button>
+          ) : (
+            <Button
+              sx={{ flex: 1 }}
+              variant="contained"
+              size="small"
+              onClick={() => connectWallet?.()}
+            >
+              Connect Wallet
+            </Button>
+          )}
         </Box>
       </Menu>
     </Box>
