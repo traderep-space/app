@@ -3,6 +3,7 @@ import { Box } from '@mui/system';
 import AboutClubDialog from 'components/dialog/AboutClubDialog';
 import JoinClubDialog from 'components/dialog/JoinClubDialog';
 import Layout from 'components/layout/Layout';
+import { DataContext } from 'context/data';
 import { DialogContext } from 'context/dialog';
 import { Web3Context } from 'context/web3';
 import { useContext } from 'react';
@@ -12,10 +13,12 @@ import { useContext } from 'react';
  */
 export default function HomePage() {
   const { account, connectWallet } = useContext(Web3Context);
+  const { accountEarlyAdopterToken } = useContext(DataContext);
   const { showDialog, closeDialog } = useContext(DialogContext);
 
   return (
     <Layout>
+      {/* If account not connected */}
       {!account && (
         <Box>
           <Typography sx={{ mb: 1.5 }}>
@@ -26,7 +29,8 @@ export default function HomePage() {
           </Button>
         </Box>
       )}
-      {account && (
+      {/* If account connected, but doesn't have early adopter token */}
+      {account && !accountEarlyAdopterToken && (
         <Box>
           <Typography sx={{ mb: 1.5 }}>
             TradeRep Application is available only for members of the private
@@ -54,6 +58,14 @@ export default function HomePage() {
               Learn about the club
             </Button>
           </Stack>
+        </Box>
+      )}
+      {/* If account connected and has early adopter token */}
+      {account && accountEarlyAdopterToken && (
+        <Box>
+          <Typography sx={{ mb: 1.5 }}>
+            Congrats! You are a member of the private club EARLY ADOPTERS.
+          </Typography>
         </Box>
       )}
     </Layout>

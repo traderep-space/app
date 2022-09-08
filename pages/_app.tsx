@@ -1,4 +1,5 @@
 import { ThemeProvider } from '@mui/material';
+import { DataProvider } from 'context/data';
 import { DialogProvider } from 'context/dialog';
 import { Web3Provider } from 'context/web3';
 import type { AppProps } from 'next/app';
@@ -60,10 +61,12 @@ function App({ Component, pageProps }: AppProps) {
     <ThemeProvider theme={theme}>
       <SnackbarProvider maxSnack={3}>
         <Web3Provider>
-          <DialogProvider>
-            <NextNProgress height={4} />
-            <Component {...pageProps} />
-          </DialogProvider>
+          <DataProvider>
+            <DialogProvider>
+              <NextNProgress height={4} />
+              <Component {...pageProps} />
+            </DialogProvider>
+          </DataProvider>
         </Web3Provider>
       </SnackbarProvider>
     </ThemeProvider>
