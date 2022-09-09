@@ -64,7 +64,7 @@ export default function AboutClubDialog(props: {
             loading="lazy"
             width={600}
             height={338}
-            alt="3D Card"
+            alt="Early Adopter 3D Card"
             style={{ borderRadius: '16px' }}
           />
         </Box>
