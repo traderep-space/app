@@ -27,7 +27,7 @@ export default function useEarlyAdopterToken() {
       args.skip || 0,
     );
     const tokens = [];
-    for (const subgraphToken in subgraphTokens) {
+    for (const subgraphToken of subgraphTokens) {
       const token = await convertSubgraphTokenToToken(subgraphToken);
       tokens.push(token);
     }
