@@ -8,6 +8,7 @@ import {
   Typography,
 } from '@mui/material';
 import { MuiForm5 as Form } from '@rjsf/material-ui';
+import { LOCAL_STORAGE_INVITATION_CODE_KEY } from 'constants/localStorage';
 import { Web3Context } from 'context/web3';
 import useError from 'hooks/useError';
 import useFormSubmit from 'hooks/useFormSubmit';
@@ -45,6 +46,7 @@ export default function JoinClubDialog(props: {
       invitation: {
         type: 'string',
         title: 'Your invitation code (optional)',
+        default: localStorage.getItem(LOCAL_STORAGE_INVITATION_CODE_KEY),
       },
       blog: {
         type: 'string',

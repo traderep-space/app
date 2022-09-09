@@ -6,7 +6,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { Web3Context } from './web3';
 
 interface IDataContext {
-  accountEarlyAdopterToken: any;
+  accountEarlyAdopterToken: EarlyAdopterToken | null;
 }
 
 export const DataContext = createContext<Partial<IDataContext>>({});

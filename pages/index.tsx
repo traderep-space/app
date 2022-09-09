@@ -1,4 +1,12 @@
-import { Button, Stack, Typography } from '@mui/material';
+import { ContentCopy } from '@mui/icons-material';
+import {
+  Button,
+  IconButton,
+  InputAdornment,
+  OutlinedInput,
+  Stack,
+  Typography,
+} from '@mui/material';
 import { Box } from '@mui/system';
 import AboutClubDialog from 'components/dialog/AboutClubDialog';
 import JoinClubDialog from 'components/dialog/JoinClubDialog';
@@ -6,6 +14,8 @@ import Layout from 'components/layout/Layout';
 import { DataContext } from 'context/data';
 import { DialogContext } from 'context/dialog';
 import { Web3Context } from 'context/web3';
+import { ethers } from 'ethers';
+import useToast from 'hooks/useToast';
 import { useContext } from 'react';
 
 /**
@@ -64,10 +74,55 @@ export default function HomePage() {
       {account && accountEarlyAdopterToken && (
         <Box>
           <Typography sx={{ mb: 1.5 }}>
-            Congrats! You are a member of the private club EARLY ADOPTERS.
+            You are a member #{accountEarlyAdopterToken.id} of the private club
+            EARLY ADOPTERS.
           </Typography>
+          <Typography sx={{ mb: 1.5 }}>
+            Features will be available to you very soon.
+          </Typography>
+          <Typography sx={{ mb: 1.5 }}>
+            We will write to you when that happens.
+          </Typography>
+          <Typography sx={{ mb: 1.5 }}>
+            In the meantime, you can invite your three friends.
+          </Typography>
+          <InvitationLink account={account} sx={{ mt: 1.5 }} />
         </Box>
       )}
     </Layout>
+  );
+}
+
+function InvitationLink(props: { account: string; sx?: any }) {
+  const { showToastSuccess } = useToast();
+
+  const link =
+    window.location.origin +
+    '/invitations/' +
+    ethers.utils
+      .keccak256(ethers.utils.toUtf8Bytes(props.account))
+      .slice(2, 12)
+      .toUpperCase();
+
+  return (
+    <OutlinedInput
+      endAdornment={
+        <InputAdornment position="end">
+          <IconButton
+            aria-label="toggle password visibility"
+            onClick={() => {
+              navigator.clipboard.writeText(link);
+              showToastSuccess('Link copied');
+            }}
+            edge="end"
+          >
+            <ContentCopy />
+          </IconButton>
+        </InputAdornment>
+      }
+      disabled
+      value={link}
+      sx={{ width: 1, ...props.sx }}
+    />
   );
 }
