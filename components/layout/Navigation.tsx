@@ -5,6 +5,7 @@ import {
   Container,
   IconButton,
   Menu,
+  MenuItem,
   Stack,
   Toolbar,
   Typography,
@@ -12,6 +13,7 @@ import {
 import { Box } from '@mui/system';
 import { Web3Context } from 'context/web3';
 import ProjectIcon from 'icons/ProjectIcon';
+import Link from 'next/link';
 import { MouseEvent, useContext, useState } from 'react';
 import { addressToShortAddress } from 'utils/converters';
 
@@ -92,19 +94,30 @@ function AccountMenu(): JSX.Element {
       >
         {/* Account address */}
         {account && (
-          <Box sx={{ px: '16px', py: '6px' }}>
-            <Stack direction="column" spacing={0}>
-              <Typography>Account</Typography>
-              <Typography color="text.secondary" variant="body2">
-                {addressToShortAddress(account)}
-              </Typography>
-            </Stack>
-          </Box>
+          <Link href="/">
+            <MenuItem onClick={handleCloseAccountMenu}>
+              <Stack direction="column" spacing={0}>
+                <Typography>Account</Typography>
+                <Typography color="text.secondary" variant="body2">
+                  {addressToShortAddress(account)}
+                </Typography>
+              </Stack>
+            </MenuItem>
+          </Link>
         )}
+        {/* Link to landing page */}
+        <MenuItem
+          onClick={handleCloseAccountMenu}
+          component="a"
+          href="https://traderep.space/"
+          target="_blank"
+        >
+          About
+        </MenuItem>
         {/* Connect or disconnect wallet button */}
         <Box
           sx={{
-            pt: '6px',
+            pt: '8px',
             pb: '6px',
             px: '16px',
             display: 'flex',
