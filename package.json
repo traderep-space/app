@@ -25,6 +25,7 @@
     "lit-js-sdk": "^1.1.207",
     "lodash": "^4.17.21",
     "next": "12.2.3",
+    "next-i18next": "^12.0.1",
     "next-transpile-modules": "^9.0.0",
     "nextjs-progressbar": "^0.0.14",
     "notistack": "^2.0.5",

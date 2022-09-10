@@ -1,5 +1,6 @@
 import { LANDING_PAGE_LINK } from 'constants/links';
 import { LOCAL_STORAGE_INVITATION_CODE_KEY } from 'constants/localStorage';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 
@@ -17,4 +18,15 @@ export default function InvitationPage() {
   }, []);
 
   return <></>;
+}
+
+/**
+ * Define localized texts before rendering the page.
+ */
+export async function getServerSideProps({ locale }: any) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    },
+  };
 }

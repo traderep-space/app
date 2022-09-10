@@ -7,6 +7,7 @@ import useError from 'hooks/useError';
 import useFormSubmit from 'hooks/useFormSubmit';
 import useToast from 'hooks/useToast';
 import { JSONSchema7 } from 'json-schema';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useState } from 'react';
 import { handleSubmitFormEvent } from 'utils/analytics';
 
@@ -97,4 +98,15 @@ export default function FeedbackPage() {
       </Form>
     </Layout>
   );
+}
+
+/**
+ * Define localized texts at build time.
+ */
+export async function getStaticProps({ locale }: any) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    },
+  };
 }

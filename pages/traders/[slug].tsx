@@ -40,6 +40,7 @@ import useTrader from 'hooks/useTrader';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
 import { addressToShortAddress } from 'utils/converters';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 /**
  * Trader page.
@@ -341,4 +342,15 @@ function Forecasts(props: {
       <ForecastList forecasts={forecasts} />
     </Box>
   );
+}
+
+/**
+ * Define localized texts before rendering the page.
+ */
+export async function getServerSideProps({ locale }: any) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    },
+  };
 }

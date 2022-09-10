@@ -1,11 +1,13 @@
-import { APP_DESCRIPTION } from 'constants/texts';
-import { Html, Head, Main, NextScript } from 'next/document';
+import { useTranslation } from 'next-i18next';
+import { Head, Html, Main, NextScript } from 'next/document';
 
 function Document() {
+  const { t } = useTranslation('common');
+
   return (
     <Html>
       <Head>
-        <meta name="description" content={APP_DESCRIPTION} />
+        <meta name="description" content={t('app-description')} />
         <link rel="icon" href="/favicon.ico" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link

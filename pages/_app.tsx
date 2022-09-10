@@ -10,6 +10,7 @@ import { useEffect } from 'react';
 import { theme } from 'theme';
 import { handlePageViewEvent, initAnalytics } from 'utils/analytics';
 import '../styles/globals.css';
+import { appWithTranslation } from 'next-i18next';
 
 const LitJsSdk = require('lit-js-sdk');
 
@@ -73,4 +74,4 @@ function App({ Component, pageProps }: AppProps) {
   );
 }
 
-export default App;
+export default appWithTranslation(App);

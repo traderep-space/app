@@ -25,6 +25,8 @@ import useEarlyAdopterToken from 'hooks/useEarlyAdopterToken';
 import useError from 'hooks/useError';
 import useIpfs from 'hooks/useIpfs';
 import useToast from 'hooks/useToast';
+import { useTranslation } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useContext, useEffect, useState } from 'react';
 import { handleCopyInvitationLinkEvent } from 'utils/analytics';
 
@@ -35,6 +37,7 @@ export default function HomePage() {
   const { account, connectWallet } = useContext(Web3Context);
   const { accountEarlyAdopterToken } = useContext(DataContext);
   const { showDialog, closeDialog } = useContext(DialogContext);
+  const { t } = useTranslation('common');
   const { handleError } = useError();
   const { ipfsUrlToHttpUrl } = useIpfs();
   const { getEarlyAdopterTokenUriData } = useEarlyAdopterToken();
@@ -68,7 +71,7 @@ export default function HomePage() {
           }}
         >
           <Typography sx={{ mb: 2 }}>
-            Connect a wallet to access the TradeRep application.
+            {t('page-home-connect-wallet-text')}
           </Typography>
           <Button
             variant="contained"
@@ -76,7 +79,7 @@ export default function HomePage() {
             startIcon={<AccountBalanceWallet />}
             onClick={() => connectWallet?.()}
           >
-            Connect wallet
+            {t('button-connect-wallet')}
           </Button>
         </Box>
       )}
@@ -90,13 +93,9 @@ export default function HomePage() {
           }}
         >
           <Typography variant="h6" sx={{ mb: 1.5 }}>
-            For now, TradeRep application is only available to members of the
-            private club EARLY ADOPTERS.
+            {t('page-home-join-club-1')}
           </Typography>
-          <Typography sx={{ mb: 4 }}>
-            To join the club and start earning a reputation before anyone else,
-            you need to fill out the form.
-          </Typography>
+          <Typography sx={{ mb: 4 }}>{t('page-home-join-club-2')}</Typography>
           <Stack direction="row" spacing={2}>
             <Button
               variant="contained"
@@ -106,7 +105,7 @@ export default function HomePage() {
                 showDialog?.(<JoinClubDialog onClose={closeDialog} />)
               }
             >
-              Fill out the form
+              {t('button-fill-form')}
             </Button>
             <Button
               variant="outlined"
@@ -116,7 +115,7 @@ export default function HomePage() {
                 showDialog?.(<AboutClubDialog onClose={closeDialog} />)
               }
             >
-              Learn about the club
+              {t('button-learn-club')}
             </Button>
           </Stack>
         </Box>
@@ -202,4 +201,15 @@ function InvitationLink(props: { account: string; sx?: any }) {
       sx={{ ...props.sx }}
     />
   );
+}
+
+/**
+ * Define localized texts at build time.
+ */
+export async function getStaticProps({ locale }: any) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    },
+  };
 }

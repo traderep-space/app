@@ -1,0 +1,20 @@
+{
+  "app-title": "TradeRep App",
+  "app-subtitle": "Beta",
+  "app-description": "TradeRep — Reputation of traders verified by blockchain",
+
+  "page-title-default": "TradeRep — Reputation of traders verified by blockchain",
+  "page-footer-default": "TradeRep — Reputation of traders verified by blockchain © 2022",
+
+  "page-home-connect-wallet": "Connect a wallet to access the TradeRep application.",
+  "page-home-join-club-1": "For now, TradeRep application is only available to members of the private club EARLY ADOPTERS.",
+  "page-home-join-club-2": "To join the club and start earning a reputation before anyone else, you need to fill out the form.",
+
+  "button-connect-wallet": "Connect wallet",
+  "button-fill-form": "Fill out the form",
+  "button-learn-club": "Learn about the club",
+  "button-feedback": "Feedback",
+
+  "text-english": "English",
+  "text-russian": "Русский"
+}
