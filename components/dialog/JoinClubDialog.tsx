@@ -94,7 +94,7 @@ export default function JoinClubDialog(props: {
   async function submit({ formData }: any) {
     try {
       setIsLoading(true);
-      submitForm(formType, {
+      await submitForm(formType, {
         account: account,
         ...formData,
       });
