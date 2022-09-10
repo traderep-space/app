@@ -9,7 +9,7 @@ import useSubgraph from './useSubgraph';
 export default function useEarlyAdopterToken() {
   const { getTokenUri } = useEarlyAdopterTokenContract();
   const { findEarlyAdopterTokens } = useSubgraph();
-  const { loadJsonFromIPFS, ipfsUrlToHttpUrl } = useIpfs();
+  const { loadJsonFromIPFS } = useIpfs();
 
   let getEarlyAdopterToken = async function (
     owner: string,

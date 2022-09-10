@@ -8,7 +8,8 @@ import WrongNetworkError from 'errors/WrongNetworkError';
  * Hook for work with early adopter token contract.
  */
 export default function useEarlyAdopterTokenContract() {
-  const { provider, isNetworkChainIdCorrect } = useContext(Web3Context);
+  const { provider, defaultProvider, isNetworkChainIdCorrect } =
+    useContext(Web3Context);
 
   function getContract(signerOrProvider: any) {
     return new Contract(
@@ -20,7 +21,7 @@ export default function useEarlyAdopterTokenContract() {
 
   async function getTokenUri(tokenId: string) {
     if (!isNetworkChainIdCorrect) {
-      throw new WrongNetworkError();
+      return await getContract(defaultProvider).tokenURI(tokenId);
     }
     return await getContract(provider?.getSigner()).tokenURI(tokenId);
   }
