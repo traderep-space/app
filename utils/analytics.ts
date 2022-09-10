@@ -26,6 +26,15 @@ export function handlePageViewEvent() {
   }
 }
 
+export function handleConnectAccountEvent(account: string) {
+  if (isAnalyticsEnabled()) {
+    posthog.capture(POST_HOG_EVENT.connectedAccount, {
+      [POST_HOG_PROPERTY.account]: account.toLowerCase(),
+    });
+    posthog.alias(account.toLowerCase());
+  }
+}
+
 export function handleCatchErrorEvent(error: any) {
   if (isAnalyticsEnabled()) {
     posthog.capture(POST_HOG_EVENT.caughtError, {

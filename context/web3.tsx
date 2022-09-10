@@ -4,6 +4,7 @@ import {
 } from '@walletconnect/web3-provider';
 import { ethers } from 'ethers';
 import { createContext, useEffect, useRef, useState } from 'react';
+import { handleConnectAccountEvent } from 'utils/analytics';
 import Web3Modal from 'web3modal';
 
 interface IWeb3Context {
@@ -188,6 +189,13 @@ export function Web3Provider({ children }: any) {
       process.env.NEXT_PUBLIC_NETWORK_CHAIN_ID_HEX;
     setIsNetworkChainCorrect(isChainIdCorrect || isChainIdHexCorrect);
   }, [networkChainId]);
+
+  useEffect(() => {
+    if (account) {
+      handleConnectAccountEvent(account);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [account]);
 
   return (
     <Web3Context.Provider
