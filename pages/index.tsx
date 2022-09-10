@@ -142,6 +142,8 @@ export default function HomePage() {
               src={accountEarlyAdopterTokenVideo}
               loop
               autoPlay
+              muted
+              controls
               sx={{
                 width: { xs: 1, md: 1 / 2 },
                 borderRadius: '16px',
