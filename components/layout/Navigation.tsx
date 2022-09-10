@@ -1,8 +1,13 @@
-import { AccountCircleRounded, Language } from '@mui/icons-material';
+import {
+  AccountBalanceWallet,
+  AccountCircleRounded,
+  Language,
+} from '@mui/icons-material';
 import {
   AppBar,
   Button,
   Container,
+  Divider,
   IconButton,
   Menu,
   MenuItem,
@@ -11,7 +16,6 @@ import {
   Typography,
 } from '@mui/material';
 import { Box } from '@mui/system';
-import AboutClubDialog from 'components/dialog/AboutClubDialog';
 import { DialogContext } from 'context/dialog';
 import { Web3Context } from 'context/web3';
 import ProjectIcon from 'icons/ProjectIcon';
@@ -100,65 +104,56 @@ function AccountMenu(): JSX.Element {
         open={Boolean(anchorElUser)}
         onClose={handleCloseAccountMenu}
       >
-        {/* Account address */}
-        {account && (
-          <Link href="/">
-            <MenuItem onClick={handleCloseAccountMenu}>
-              <Stack direction="column" spacing={0}>
-                <Typography>Account</Typography>
-                <Typography color="text.secondary" variant="body2">
-                  {addressToShortAddress(account)}
-                </Typography>
-              </Stack>
-            </MenuItem>
-          </Link>
-        )}
-        {/* Link to landing page */}
-        <MenuItem
-          onClick={handleCloseAccountMenu}
-          component="a"
-          href="https://traderep.space/"
-          target="_blank"
-        >
-          About project
-        </MenuItem>
-        {/* Information about private club */}
-        <MenuItem
-          onClick={() => {
-            handleCloseAccountMenu();
-            showDialog?.(<AboutClubDialog onClose={closeDialog} />);
-          }}
-        >
-          About club
-        </MenuItem>
+        {/* Link to home page */}
+        <Link href="/">
+          <MenuItem onClick={handleCloseAccountMenu}>About</MenuItem>
+        </Link>
         {/* Link to feedback page */}
         <Link href="/feedback">
           <MenuItem onClick={handleCloseAccountMenu}>Feedback</MenuItem>
         </Link>
+        <Divider />
         {/* Connect or disconnect wallet button */}
         <Box
           sx={{
-            pt: '16px',
+            pt: '6px',
             pb: '6px',
             px: '16px',
             display: 'flex',
           }}
         >
           {account ? (
-            <Button
-              sx={{ flex: 1 }}
-              variant="contained"
-              size="small"
-              onClick={() => disconnectWallet?.()}
-            >
-              Disconnect Wallet
-            </Button>
+            <Box>
+              <Button
+                sx={{ flex: 1 }}
+                variant="contained"
+                onClick={() => disconnectWallet?.()}
+              >
+                Disconnect Wallet
+              </Button>
+              <Stack
+                direction="row"
+                spacing={1}
+                alignItems="center"
+                justifyContent="center"
+                sx={{ mt: 1.5 }}
+              >
+                <AccountBalanceWallet
+                  sx={{ color: 'text.secondary', fontSize: 18 }}
+                />
+                <Typography variant="body2" color="text.secondary">
+                  {addressToShortAddress(account)}
+                </Typography>
+              </Stack>
+            </Box>
           ) : (
             <Button
               sx={{ flex: 1 }}
               variant="contained"
-              size="small"
-              onClick={() => connectWallet?.()}
+              onClick={() => {
+                handleCloseAccountMenu();
+                connectWallet?.();
+              }}
             >
               Connect Wallet
             </Button>

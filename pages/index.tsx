@@ -1,215 +1,263 @@
+import { VerifiedOutlined, VpnLock } from '@mui/icons-material';
 import {
-  AccountBalanceWallet,
-  ContentCopy,
-  Edit,
-  PeopleAlt,
-} from '@mui/icons-material';
-import {
+  Avatar,
   Button,
-  CardMedia,
-  IconButton,
-  InputAdornment,
-  OutlinedInput,
+  Divider,
+  Grid,
+  Link as MuiLink,
   Stack,
   Typography,
 } from '@mui/material';
 import { Box } from '@mui/system';
-import AboutClubDialog from 'components/dialog/AboutClubDialog';
-import JoinClubDialog from 'components/dialog/JoinClubDialog';
 import Layout from 'components/layout/Layout';
-import { DataContext } from 'context/data';
-import { DialogContext } from 'context/dialog';
-import { Web3Context } from 'context/web3';
-import { ethers } from 'ethers';
-import useEarlyAdopterToken from 'hooks/useEarlyAdopterToken';
-import useError from 'hooks/useError';
-import useIpfs from 'hooks/useIpfs';
-import useToast from 'hooks/useToast';
+import BlockchainIcon from 'icons/BlockchainIcon';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useContext, useEffect, useState } from 'react';
-import { handleCopyInvitationLinkEvent } from 'utils/analytics';
+import Image from 'next/image';
+import Link from 'next/link';
 
 /**
  * Home page.
  */
 export default function HomePage() {
-  const { account, connectWallet } = useContext(Web3Context);
-  const { accountEarlyAdopterToken } = useContext(DataContext);
-  const { showDialog, closeDialog } = useContext(DialogContext);
   const { t } = useTranslation('common');
-  const { handleError } = useError();
-  const { ipfsUrlToHttpUrl } = useIpfs();
-  const { getEarlyAdopterTokenUriData } = useEarlyAdopterToken();
-  const [accountEarlyAdopterTokenVideo, setAccountEarlyAdopterTokenVideo] =
-    useState<string | null>(null);
 
-  /**
-   * Load video for account's early adopter token.
-   */
-  useEffect(() => {
-    setAccountEarlyAdopterTokenVideo(null);
-    if (accountEarlyAdopterToken) {
-      getEarlyAdopterTokenUriData(accountEarlyAdopterToken.id)
-        .then((uriData) =>
-          setAccountEarlyAdopterTokenVideo(ipfsUrlToHttpUrl(uriData?.image)),
-        )
-        .catch((error: any) => handleError(error, true));
+  function scrollTo(elementId: string) {
+    const element = document.getElementById(elementId);
+    if (element) {
+      const headerOffset = 120;
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition =
+        elementPosition + window.pageYOffset - headerOffset;
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth',
+      });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accountEarlyAdopterToken]);
+  }
+
+  function Header() {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: { xs: 'column', md: 'row' },
+          mt: { xs: 0, md: 12 },
+        }}
+      >
+        {/* Text and button */}
+        <Box
+          sx={{
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            textAlign: 'center',
+          }}
+        >
+          {/* Overtitle */}
+          <MuiLink
+            underline="none"
+            component="button"
+            onClick={() => scrollTo('how-it-works')}
+          >
+            <Stack
+              direction={{ xs: 'column', md: 'row' }}
+              spacing={{ xs: 0, md: 1 }}
+              alignItems={{ xs: 'center', md: 'center' }}
+            >
+              <BlockchainIcon sx={{ fontSize: 36 }} />
+              <Typography color="primary">
+                {t('page-home-overtitle')}
+              </Typography>
+            </Stack>
+          </MuiLink>
+          {/* Title */}
+          <Typography variant="h3" sx={{ mt: { xs: 2, md: 0 } }}>
+            {t('page-home-title')}
+          </Typography>
+          {/* Subtitle */}
+          <Typography variant="h6" color="text.secondary" sx={{ mt: 1.5 }}>
+            {t('page-home-subtitle')}
+          </Typography>
+          {/* Button */}
+          <Link href="/beta">
+            <Button
+              variant="contained"
+              sx={{ mt: { xs: 4, md: 3 }, px: 5, py: 1.5 }}
+            >
+              {t('button-start')}
+            </Button>
+          </Link>
+        </Box>
+        {/* Image */}
+        <Box sx={{ flex: 1, mt: { xs: 4, md: 0 } }}>
+          <Image
+            src="/images/image-header.png"
+            layout="responsive"
+            priority={true}
+            width={1080}
+            height={540}
+            alt="Reputation of traders"
+          />
+        </Box>
+      </Box>
+    );
+  }
+
+  function Advantages() {
+    function Advantage({ title, subtitle, icon }: any) {
+      return (
+        <Box
+          sx={{
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            textAlign: 'center',
+          }}
+        >
+          <Avatar
+            sx={{
+              bgcolor: '#FFFFFF',
+              color: 'primary.main',
+              width: 60,
+              height: 60,
+            }}
+          >
+            {icon}
+          </Avatar>
+          <Typography variant="h5" sx={{ mt: 1 }}>
+            {title}
+          </Typography>
+          <Typography
+            color="text.secondary"
+            sx={{ px: { xs: 0, md: 8 }, mt: 0.5 }}
+          >
+            {subtitle}
+          </Typography>
+        </Box>
+      );
+    }
+
+    return (
+      <Grid container spacing={6} sx={{ mt: { xs: 4, md: 9 } }}>
+        <Grid item xs={12} md={6}>
+          <Advantage
+            title={t('page-home-advantage-1-title')}
+            subtitle={t('page-home-advantage-1-subtitle')}
+            icon={<VpnLock sx={{ fontSize: 28 }} />}
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Advantage
+            title={t('page-home-advantage-2-title')}
+            subtitle={t('page-home-advantage-2-subtitle')}
+            icon={<VerifiedOutlined sx={{ fontSize: 28 }} />}
+          />
+        </Grid>
+      </Grid>
+    );
+  }
+
+  function HowItWorks() {
+    function Row({ title, subtitle, image, sx }: any) {
+      return (
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column-reverse', md: 'row-reverse' },
+            mt: 8,
+            alignItems: { xs: 'none', md: 'center' },
+            ...sx,
+          }}
+        >
+          {/* Text */}
+          <Box sx={{ flex: 1, textAlign: 'center', mt: { xs: 1, md: 0 } }}>
+            <Typography variant="h6" sx={{ px: { xs: 0, md: 4 } }}>
+              {title}
+            </Typography>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ px: { xs: 0, md: 12 }, mt: 0.5 }}
+            >
+              {subtitle}
+            </Typography>
+          </Box>
+          {/* Image */}
+          <Box sx={{ flex: 1 }}>
+            <Image
+              src={image}
+              layout="responsive"
+              priority={true}
+              width={1080}
+              height={540}
+              alt="How it works"
+            />
+          </Box>
+        </Box>
+      );
+    }
+
+    return (
+      <Box id="how-it-works" sx={{ mt: 12 }}>
+        {/* Title and subtitle */}
+        <Box sx={{ textAlign: 'center' }}>
+          <Typography variant="h4">
+            {t('page-home-how-it-works-title')}
+          </Typography>
+          <Typography color="text.secondary" sx={{ mt: 1 }}>
+            {t('page-home-how-it-works-subtitle')}
+          </Typography>
+        </Box>
+        {/* Rows */}
+        <Row
+          title={t('page-home-how-it-works-row-1-title')}
+          subtitle={t('page-home-how-it-works-row-1-subtitle')}
+          image="/images/image-how-it-works-1.png"
+        />
+        <Row
+          title={t('page-home-how-it-works-row-2-title')}
+          subtitle={t('page-home-how-it-works-row-2-subtitle')}
+          image="/images/image-how-it-works-2.png"
+          sx={{ flexDirection: { xs: 'column-reverse', md: 'row' } }}
+        />
+        <Row
+          title={t('page-home-how-it-works-row-3-title')}
+          subtitle={t('page-home-how-it-works-row-3-subtitle')}
+          image="/images/image-how-it-works-3.png"
+        />
+        {/* Button to become a user */}
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 6 }}>
+          <Link href="/beta">
+            <Button variant="contained" sx={{ px: 5, py: 1.5 }}>
+              {t('button-start-earn-reputation')}
+            </Button>
+          </Link>
+        </Box>
+      </Box>
+    );
+  }
 
   return (
     <Layout>
-      {/* If account not connected */}
-      {!account && (
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <Typography sx={{ mb: 2 }}>
-            {t('page-home-connect-wallet-text')}
-          </Typography>
-          <Button
-            variant="contained"
-            size="large"
-            startIcon={<AccountBalanceWallet />}
-            onClick={() => connectWallet?.()}
-          >
-            {t('button-connect-wallet')}
-          </Button>
-        </Box>
-      )}
-      {/* If account connected, but doesn't have early adopter token */}
-      {account && !accountEarlyAdopterToken && (
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <Typography variant="h6" sx={{ mb: 1.5 }}>
-            {t('page-home-join-club-1')}
-          </Typography>
-          <Typography sx={{ mb: 4 }}>{t('page-home-join-club-2')}</Typography>
-          <Stack direction="row" spacing={2}>
-            <Button
-              variant="contained"
-              size="large"
-              startIcon={<Edit />}
-              onClick={() =>
-                showDialog?.(<JoinClubDialog onClose={closeDialog} />)
-              }
-            >
-              {t('button-fill-form')}
-            </Button>
-            <Button
-              variant="outlined"
-              size="large"
-              startIcon={<PeopleAlt />}
-              onClick={() =>
-                showDialog?.(<AboutClubDialog onClose={closeDialog} />)
-              }
-            >
-              {t('button-learn-club')}
-            </Button>
-          </Stack>
-        </Box>
-      )}
-      {/* If account connected and has early adopter token */}
-      {account && accountEarlyAdopterToken && (
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <Typography variant="h6" sx={{ mb: 1.5 }}>
-            Welcome to the private club EARLY ADOPTER!
-          </Typography>
-          <Typography sx={{ mb: 1.5 }}>
-            You are {accountEarlyAdopterToken.id} of 142 members.
-          </Typography>
-          {accountEarlyAdopterTokenVideo && (
-            <CardMedia
-              component="video"
-              src={accountEarlyAdopterTokenVideo}
-              loop
-              autoPlay
-              muted
-              controls
-              sx={{
-                width: { xs: 1, md: 1 / 2 },
-                borderRadius: '16px',
-                mt: 1,
-                mb: 4,
-              }}
-            />
-          )}
-          <Typography sx={{ mb: 1.5 }}>
-            TradeRep application will be available to you soon. We&apos;ll send
-            an email when it happens.
-          </Typography>
-          <Typography sx={{ mb: 1.5 }}>
-            For now, you can invite 3 of your friends.
-          </Typography>
-          <InvitationLink
-            account={account}
-            sx={{ width: { xs: 1, md: 1 / 2 }, mt: 1.5 }}
-          />
-        </Box>
-      )}
+      <Header />
+      <Advantages />
+      <Divider sx={{ mt: 12 }} />
+      <HowItWorks />
+      <Box sx={{ height: 48 }} />
     </Layout>
-  );
-}
-
-function InvitationLink(props: { account: string; sx?: any }) {
-  const { showToastSuccess } = useToast();
-
-  const link =
-    window.location.origin +
-    '/invitations/' +
-    ethers.utils
-      .keccak256(ethers.utils.toUtf8Bytes(props.account))
-      .slice(2, 12)
-      .toUpperCase();
-
-  return (
-    <OutlinedInput
-      endAdornment={
-        <InputAdornment position="end">
-          <IconButton
-            aria-label="copy invitation link"
-            onClick={() => {
-              navigator.clipboard.writeText(link);
-              handleCopyInvitationLinkEvent(link);
-              showToastSuccess('Link copied');
-            }}
-            edge="end"
-          >
-            <ContentCopy />
-          </IconButton>
-        </InputAdornment>
-      }
-      disabled
-      value={link}
-      sx={{ ...props.sx }}
-    />
   );
 }
 
 /**
  * Define localized texts at build time.
  */
-export async function getStaticProps({ locale }: any) {
+export async function getStaticProps({ locale, nextI18NextConfig }: any) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['common'])),
+      ...(await serverSideTranslations(locale, ['common'], nextI18NextConfig)),
     },
   };
 }
