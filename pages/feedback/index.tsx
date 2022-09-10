@@ -8,6 +8,7 @@ import useFormSubmit from 'hooks/useFormSubmit';
 import useToast from 'hooks/useToast';
 import { JSONSchema7 } from 'json-schema';
 import { useState } from 'react';
+import { handleSubmitFormEvent } from 'utils/analytics';
 
 /**
  * Feedback page.
@@ -54,6 +55,7 @@ export default function FeedbackPage() {
       setFormData(formData);
       setIsLoading(true);
       await submitForm(formType, formData);
+      handleSubmitFormEvent(formType, formData);
       setFormData({});
       showToastSuccess('Data sent successfully!');
     } catch (error: any) {

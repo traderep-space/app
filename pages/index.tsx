@@ -26,6 +26,7 @@ import useError from 'hooks/useError';
 import useIpfs from 'hooks/useIpfs';
 import useToast from 'hooks/useToast';
 import { useContext, useEffect, useState } from 'react';
+import { handleCopyInvitationLinkEvent } from 'utils/analytics';
 
 /**
  * Home page.
@@ -182,9 +183,10 @@ function InvitationLink(props: { account: string; sx?: any }) {
       endAdornment={
         <InputAdornment position="end">
           <IconButton
-            aria-label="toggle password visibility"
+            aria-label="copy invitation link"
             onClick={() => {
               navigator.clipboard.writeText(link);
+              handleCopyInvitationLinkEvent(link);
               showToastSuccess('Link copied');
             }}
             edge="end"

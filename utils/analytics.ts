@@ -43,3 +43,20 @@ export function handleCatchErrorEvent(error: any) {
     });
   }
 }
+
+export function handleSubmitFormEvent(formType: string, formData: any) {
+  if (isAnalyticsEnabled()) {
+    posthog.capture(POST_HOG_EVENT.submittedForm, {
+      [POST_HOG_PROPERTY.formType]: formType,
+      [POST_HOG_PROPERTY.formData]: formData,
+    });
+  }
+}
+
+export function handleCopyInvitationLinkEvent(link: string) {
+  if (isAnalyticsEnabled()) {
+    posthog.capture(POST_HOG_EVENT.copiedInvitationLink, {
+      [POST_HOG_PROPERTY.link]: link,
+    });
+  }
+}

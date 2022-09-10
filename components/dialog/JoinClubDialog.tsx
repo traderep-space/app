@@ -15,6 +15,7 @@ import useFormSubmit from 'hooks/useFormSubmit';
 import useToast from 'hooks/useToast';
 import { JSONSchema7 } from 'json-schema';
 import { useContext, useState } from 'react';
+import { handleSubmitFormEvent } from 'utils/analytics';
 
 /**
  * Dialog to fill out join club form.
@@ -98,6 +99,7 @@ export default function JoinClubDialog(props: {
         account: account,
         ...formData,
       });
+      handleSubmitFormEvent(formType, { account: account, ...formData });
       showToastSuccess('Data sent successfully!');
       close();
     } catch (error: any) {
