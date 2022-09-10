@@ -1,4 +1,9 @@
-import { ContentCopy } from '@mui/icons-material';
+import {
+  AccountBalanceWallet,
+  ContentCopy,
+  Edit,
+  PeopleAlt,
+} from '@mui/icons-material';
 import {
   Button,
   CardMedia,
@@ -54,21 +59,38 @@ export default function HomePage() {
     <Layout>
       {/* If account not connected */}
       {!account && (
-        <Box>
-          <Typography sx={{ mb: 1.5 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Typography sx={{ mb: 2 }}>
             Connect a wallet to access the TradeRep application.
           </Typography>
-          <Button variant="contained" onClick={() => connectWallet?.()}>
+          <Button
+            variant="contained"
+            size="large"
+            startIcon={<AccountBalanceWallet />}
+            onClick={() => connectWallet?.()}
+          >
             Connect wallet
           </Button>
         </Box>
       )}
       {/* If account connected, but doesn't have early adopter token */}
       {account && !accountEarlyAdopterToken && (
-        <Box>
-          <Typography sx={{ mb: 1.5 }}>
-            TradeRep Application is available only for members of the private
-            club EARLY ADOPTERS.
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Typography variant="h6" sx={{ mb: 1.5 }}>
+            For now, TradeRep application is only available to members of the
+            private club EARLY ADOPTERS.
           </Typography>
           <Typography sx={{ mb: 4 }}>
             To join the club and start earning a reputation before anyone else,
@@ -77,6 +99,8 @@ export default function HomePage() {
           <Stack direction="row" spacing={2}>
             <Button
               variant="contained"
+              size="large"
+              startIcon={<Edit />}
               onClick={() =>
                 showDialog?.(<JoinClubDialog onClose={closeDialog} />)
               }
@@ -85,6 +109,8 @@ export default function HomePage() {
             </Button>
             <Button
               variant="outlined"
+              size="large"
+              startIcon={<PeopleAlt />}
               onClick={() =>
                 showDialog?.(<AboutClubDialog onClose={closeDialog} />)
               }
@@ -96,10 +122,18 @@ export default function HomePage() {
       )}
       {/* If account connected and has early adopter token */}
       {account && accountEarlyAdopterToken && (
-        <Box>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Typography variant="h6" sx={{ mb: 1.5 }}>
+            Welcome to the private club EARLY ADOPTER!
+          </Typography>
           <Typography sx={{ mb: 1.5 }}>
-            You are a member #{accountEarlyAdopterToken.id} of the private club
-            EARLY ADOPTERS.
+            You are {accountEarlyAdopterToken.id} of 142 members.
           </Typography>
           {accountEarlyAdopterTokenVideo && (
             <CardMedia
@@ -110,21 +144,22 @@ export default function HomePage() {
               sx={{
                 width: { xs: 1, md: 1 / 2 },
                 borderRadius: '16px',
-                mt: 4,
+                mt: 1,
                 mb: 4,
               }}
             />
           )}
           <Typography sx={{ mb: 1.5 }}>
-            Features will be available to you very soon.
+            TradeRep application will be available to you soon. We&apos;ll send
+            an email when it happens.
           </Typography>
           <Typography sx={{ mb: 1.5 }}>
-            We will write to you when that happens.
+            For now, you can invite 3 of your friends.
           </Typography>
-          <Typography sx={{ mb: 1.5 }}>
-            In the meantime, you can invite your three friends.
-          </Typography>
-          <InvitationLink account={account} sx={{ mt: 1.5 }} />
+          <InvitationLink
+            account={account}
+            sx={{ width: { xs: 1, md: 1 / 2 }, mt: 1.5 }}
+          />
         </Box>
       )}
     </Layout>
@@ -160,7 +195,7 @@ function InvitationLink(props: { account: string; sx?: any }) {
       }
       disabled
       value={link}
-      sx={{ width: 1, ...props.sx }}
+      sx={{ ...props.sx }}
     />
   );
 }
