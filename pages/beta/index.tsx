@@ -129,12 +129,23 @@ export default function BetaPage() {
             alignItems: 'center',
           }}
         >
-          <Typography variant="h6" sx={{ mb: 1.5 }}>
+          <Typography variant="h6" sx={{ mb: 1 }}>
             Welcome to the private club EARLY ADOPTER!
           </Typography>
           <Typography sx={{ mb: 1.5 }}>
             You are {accountEarlyAdopterToken.id} of 142 members.
           </Typography>
+          <Button
+            variant="outlined"
+            size="small"
+            startIcon={<PeopleAlt />}
+            onClick={() =>
+              showDialog?.(<AboutClubDialog onClose={closeDialog} />)
+            }
+            sx={{ mb: 1.5 }}
+          >
+            {t('button-learn-club')}
+          </Button>
           {accountEarlyAdopterTokenVideo && (
             <CardMedia
               component="video"
@@ -142,12 +153,11 @@ export default function BetaPage() {
               loop
               autoPlay
               muted
-              controls
               sx={{
                 width: { xs: 1, md: 1 / 2 },
                 borderRadius: '16px',
                 mt: 1,
-                mb: 4,
+                mb: 3,
               }}
             />
           )}
