@@ -126,10 +126,14 @@ function AccountMenu(): JSX.Element {
         >
           About club
         </MenuItem>
+        {/* Link to feedback page */}
+        <Link href="/feedback">
+          <MenuItem onClick={handleCloseAccountMenu}>Feedback</MenuItem>
+        </Link>
         {/* Connect or disconnect wallet button */}
         <Box
           sx={{
-            pt: '8px',
+            pt: '16px',
             pb: '6px',
             px: '16px',
             display: 'flex',

@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
 import { PAGE_TITLE_DEFAULT } from 'constants/texts';
 import Head from 'next/head';
+import FeedbackFab from './FeedbackFab';
 import Footer from './Footer';
 import Navigation from './Navigation';
 
@@ -31,6 +32,7 @@ export default function Layout({ children }: any) {
           <Toolbar />
           {children}
         </Box>
+        <FeedbackFab />
         <Footer />
       </Container>
     </Box>
