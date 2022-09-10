@@ -11,6 +11,8 @@ import {
   Typography,
 } from '@mui/material';
 import { Box } from '@mui/system';
+import AboutClubDialog from 'components/dialog/AboutClubDialog';
+import { DialogContext } from 'context/dialog';
 import { Web3Context } from 'context/web3';
 import ProjectIcon from 'icons/ProjectIcon';
 import Link from 'next/link';
@@ -63,6 +65,7 @@ export default function Navigation() {
 
 function AccountMenu(): JSX.Element {
   const { account, connectWallet, disconnectWallet } = useContext(Web3Context);
+  const { showDialog, closeDialog } = useContext(DialogContext);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
   function handleOpenAccountMenu(event: MouseEvent<HTMLElement>) {
@@ -112,7 +115,16 @@ function AccountMenu(): JSX.Element {
           href="https://traderep.space/"
           target="_blank"
         >
-          About
+          About project
+        </MenuItem>
+        {/* Information about private club */}
+        <MenuItem
+          onClick={() => {
+            handleCloseAccountMenu();
+            showDialog?.(<AboutClubDialog onClose={closeDialog} />);
+          }}
+        >
+          About club
         </MenuItem>
         {/* Connect or disconnect wallet button */}
         <Box
