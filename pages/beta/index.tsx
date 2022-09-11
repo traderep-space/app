@@ -61,7 +61,7 @@ export default function BetaPage() {
 
   return (
     <Layout>
-      {/* If account not connected */}
+      {/* Step 1 - If account not connected */}
       {!account && (
         <Box
           sx={{
@@ -70,9 +70,7 @@ export default function BetaPage() {
             alignItems: 'center',
           }}
         >
-          <Typography sx={{ mb: 2 }}>
-            {t('page-home-connect-wallet')}
-          </Typography>
+          <Typography sx={{ mb: 2 }}>{t('page-beta-step-1-title')}</Typography>
           <Button
             variant="contained"
             size="large"
@@ -83,7 +81,7 @@ export default function BetaPage() {
           </Button>
         </Box>
       )}
-      {/* If account connected, but doesn't have early adopter token */}
+      {/* Step 2 - If account connected, but doesn't have early adopter token */}
       {account && !accountEarlyAdopterToken && (
         <Box
           sx={{
@@ -93,9 +91,11 @@ export default function BetaPage() {
           }}
         >
           <Typography variant="h6" sx={{ mb: 1.5 }}>
-            {t('page-home-join-club-1')}
+            {t('page-beta-step-2-title')}
           </Typography>
-          <Typography sx={{ mb: 4 }}>{t('page-home-join-club-2')}</Typography>
+          <Typography sx={{ mb: 4 }}>
+            {t('page-beta-step-2-subtitle')}
+          </Typography>
           <Stack direction="row" spacing={2}>
             <Button
               variant="contained"
@@ -120,7 +120,7 @@ export default function BetaPage() {
           </Stack>
         </Box>
       )}
-      {/* If account connected and has early adopter token */}
+      {/* Step 3 - If account connected and has early adopter token */}
       {account && accountEarlyAdopterToken && (
         <Box
           sx={{
@@ -130,10 +130,12 @@ export default function BetaPage() {
           }}
         >
           <Typography variant="h6" sx={{ mb: 1 }}>
-            Welcome to the private club EARLY ADOPTER!
+            {t('page-beta-step-3-title')}
           </Typography>
           <Typography sx={{ mb: 1.5 }}>
-            You are {accountEarlyAdopterToken.id} of 142 members.
+            {t('page-beta-step-3-subtitle-1-part-1')}{' '}
+            {accountEarlyAdopterToken.id}{' '}
+            {t('page-beta-step-3-subtitle-1-part-2')}
           </Typography>
           <Button
             variant="outlined"
@@ -162,11 +164,10 @@ export default function BetaPage() {
             />
           )}
           <Typography sx={{ mb: 1.5 }}>
-            TradeRep application will be available to you soon. We&apos;ll send
-            an email when it happens.
+            {t('page-beta-step-3-subtitle-2')}
           </Typography>
           <Typography sx={{ mb: 1.5 }}>
-            For now, you can invite 3 of your friends.
+            {t('page-beta-step-3-subtitle-3')}
           </Typography>
           <InvitationLink
             account={account}
@@ -179,6 +180,7 @@ export default function BetaPage() {
 }
 
 function InvitationLink(props: { account: string; sx?: any }) {
+  const { t } = useTranslation('common');
   const { showToastSuccess } = useToast();
 
   const link =
@@ -198,7 +200,7 @@ function InvitationLink(props: { account: string; sx?: any }) {
             onClick={() => {
               navigator.clipboard.writeText(link);
               handleCopyInvitationLinkEvent(link);
-              showToastSuccess('Link copied');
+              showToastSuccess(t('text-link-copied'));
             }}
             edge="end"
           >

@@ -7,6 +7,7 @@ import useError from 'hooks/useError';
 import useFormSubmit from 'hooks/useFormSubmit';
 import useToast from 'hooks/useToast';
 import { JSONSchema7 } from 'json-schema';
+import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useState } from 'react';
 import { handleSubmitFormEvent } from 'utils/analytics';
@@ -15,6 +16,7 @@ import { handleSubmitFormEvent } from 'utils/analytics';
  * Feedback page.
  */
 export default function FeedbackPage() {
+  const { t } = useTranslation('common');
   const { handleError } = useError();
   const { showToastSuccess } = useToast();
   const { submitForm } = useFormSubmit();
@@ -28,15 +30,18 @@ export default function FeedbackPage() {
     properties: {
       name: {
         type: 'string',
-        title: 'Your name or pseudonym (optional)',
+        title:
+          t('input-name-or-pseudonym-title') +
+          ' ' +
+          t('input-optional-title-part'),
       },
       contact: {
         type: 'string',
-        title: 'Your email',
+        title: t('input-email-title'),
       },
       feedback: {
         type: 'string',
-        title: 'Your question or suggestion',
+        title: t('input-question-or-suggestion-title'),
         default: '',
       },
     },
@@ -58,7 +63,7 @@ export default function FeedbackPage() {
       await submitForm(formType, formData);
       handleSubmitFormEvent(formType, formData);
       setFormData({});
-      showToastSuccess('Data sent successfully!');
+      showToastSuccess(t('text-data-sent-successfully'));
     } catch (error: any) {
       handleError(error, true);
     } finally {
@@ -69,9 +74,9 @@ export default function FeedbackPage() {
   return (
     <Layout>
       <Typography gutterBottom variant="h6">
-        Do you have a question or suggestion?
+        {t('page-feedback-title')}
       </Typography>
-      <Typography>Write to us, we will be glad to help!</Typography>
+      <Typography>{t('page-feedback-subtitle')}</Typography>
       <Form
         schema={schema}
         uiSchema={uiSchema}
@@ -87,11 +92,11 @@ export default function FeedbackPage() {
               startIcon={<Save />}
               variant="outlined"
             >
-              Sending data
+              {t('button-sending-data')}
             </LoadingButton>
           ) : (
             <Button variant="contained" type="submit">
-              Send
+              {t('button-send')}
             </Button>
           )}
         </Stack>

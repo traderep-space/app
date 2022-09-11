@@ -14,6 +14,7 @@ import {
   Typography,
 } from '@mui/material';
 import { Box } from '@mui/system';
+import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
 import { useState } from 'react';
 
@@ -24,6 +25,7 @@ export default function AboutClubDialog(props: {
   isClose?: boolean;
   onClose?: Function;
 }) {
+  const { t } = useTranslation('common');
   const [isOpen, setIsOpen] = useState(!props.isClose);
 
   async function close() {
@@ -56,7 +58,7 @@ export default function AboutClubDialog(props: {
   return (
     <Dialog open={isOpen} onClose={close} maxWidth="sm" fullWidth>
       <DialogContent>
-        <Typography variant="h6">Private club EARLY ADOPTERS</Typography>
+        <Typography variant="h6">{t('dialog-about-club-title')}</Typography>
         <Box sx={{ mt: 2 }}>
           <Image
             src="/images/early-adopter-3d-card.gif"
@@ -70,34 +72,34 @@ export default function AboutClubDialog(props: {
         </Box>
         <Stack sx={{ mt: 3 }} spacing={3}>
           <Feature
-            title="Unique NFT"
-            subtitle="Each member of a private club receives an NFT with a unique number."
+            title={t('dialog-about-feature-1-title')}
+            subtitle={t('dialog-about-feature-1-subtitle')}
             icon={<LocalActivityOutlined />}
           />
           <Feature
-            title="Limited number of participants"
-            subtitle="Only 142 lucky people will be able to join the private club EARLY ADOPTERS."
+            title={t('dialog-about-feature-2-title')}
+            subtitle={t('dialog-about-feature-2-subtitle')}
             icon={<GroupOutlined />}
           />
           <Feature
-            title="Special badge"
-            subtitle="Members of the private club get a special badge that helps them stand out among the other traders."
+            title={t('dialog-about-feature-3-title')}
+            subtitle={t('dialog-about-feature-3-subtitle')}
             icon={<LoyaltyOutlined />}
           />
           <Feature
-            title="Recognition"
-            subtitle="As a club member, you recognize that your reputation as a trader is not just empty words to you."
+            title={t('dialog-about-feature-4-title')}
+            subtitle={t('dialog-about-feature-4-subtitle')}
             icon={<HandshakeOutlined />}
           />
           <Feature
-            title="Extra benefits"
-            subtitle="Which will be revealed as the project progresses to all members of the private club EARLY ADOPTERS."
+            title={t('dialog-about-feature-5-title')}
+            subtitle={t('dialog-about-feature-5-subtitle')}
             icon={<RocketOutlined />}
           />
         </Stack>
         <Stack direction="row" spacing={1} sx={{ mt: 2 }}>
           <Button variant="contained" onClick={() => props.onClose?.()}>
-            Close
+            {t('button-close')}
           </Button>
         </Stack>
       </DialogContent>

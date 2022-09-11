@@ -43,21 +43,21 @@ export default function Navigation() {
           {/* Logo */}
           <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'row' }}>
             <ProjectIcon sx={{ fontSize: 32 }} />
-            <Typography
-              variant="h6"
-              noWrap
-              component="a"
-              href="/"
-              sx={{
-                ml: 1,
-                mr: 1,
-                fontWeight: 700,
-                color: 'inherit',
-                textDecoration: 'none',
-              }}
-            >
-              {t('app-title')}
-            </Typography>
+            <Link href="/" passHref>
+              <Typography
+                variant="h6"
+                component="a"
+                sx={{
+                  ml: 1,
+                  mr: 1,
+                  fontWeight: 700,
+                  color: 'inherit',
+                  textDecoration: 'none',
+                }}
+              >
+                {t('app-title')}
+              </Typography>
+            </Link>
             <Typography color="text.secondary" variant="body2">
               {t('app-subtitle')}
             </Typography>
@@ -74,7 +74,7 @@ export default function Navigation() {
 
 function AccountMenu(): JSX.Element {
   const { account, connectWallet, disconnectWallet } = useContext(Web3Context);
-  const { showDialog, closeDialog } = useContext(DialogContext);
+  const { t } = useTranslation('common');
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
   function handleOpenAccountMenu(event: MouseEvent<HTMLElement>) {
@@ -106,11 +106,15 @@ function AccountMenu(): JSX.Element {
       >
         {/* Link to home page */}
         <Link href="/">
-          <MenuItem onClick={handleCloseAccountMenu}>About</MenuItem>
+          <MenuItem onClick={handleCloseAccountMenu}>
+            {t('navigation-about-item')}
+          </MenuItem>
         </Link>
         {/* Link to feedback page */}
         <Link href="/feedback">
-          <MenuItem onClick={handleCloseAccountMenu}>Feedback</MenuItem>
+          <MenuItem onClick={handleCloseAccountMenu}>
+            {t('navigation-feedback-item')}
+          </MenuItem>
         </Link>
         <Divider />
         {/* Connect or disconnect wallet button */}
@@ -129,7 +133,7 @@ function AccountMenu(): JSX.Element {
                 variant="contained"
                 onClick={() => disconnectWallet?.()}
               >
-                Disconnect Wallet
+                {t('button-disconnect-wallet')}
               </Button>
               <Stack
                 direction="row"
@@ -155,7 +159,7 @@ function AccountMenu(): JSX.Element {
                 connectWallet?.();
               }}
             >
-              Connect Wallet
+              {t('button-connect-wallet')}
             </Button>
           )}
         </Box>

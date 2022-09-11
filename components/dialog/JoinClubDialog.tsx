@@ -14,6 +14,7 @@ import useError from 'hooks/useError';
 import useFormSubmit from 'hooks/useFormSubmit';
 import useToast from 'hooks/useToast';
 import { JSONSchema7 } from 'json-schema';
+import { useTranslation } from 'next-i18next';
 import { useContext, useState } from 'react';
 import { handleSubmitFormEvent } from 'utils/analytics';
 
@@ -25,6 +26,7 @@ export default function JoinClubDialog(props: {
   onClose?: Function;
 }) {
   const { account } = useContext(Web3Context);
+  const { t } = useTranslation('common');
   const { handleError } = useError();
   const { showToastSuccess } = useToast();
   const { submitForm } = useFormSubmit();
@@ -38,51 +40,53 @@ export default function JoinClubDialog(props: {
     properties: {
       name: {
         type: 'string',
-        title: 'Your name or pseudonym',
+        title: t('input-name-or-pseudonym-title'),
       },
       email: {
         type: 'string',
-        title: 'Your email',
+        title: t('input-email-title'),
       },
       invitation: {
         type: 'string',
-        title: 'Your invitation code (optional)',
+        title:
+          t('input-invitation-code-title') +
+          ' ' +
+          t('input-optional-title-part'),
         default: localStorage.getItem(LOCAL_STORAGE_INVITATION_CODE_KEY),
       },
       blog: {
         type: 'string',
-        title: 'Your blog (optional)',
+        title: t('input-blog-title') + ' ' + t('input-optional-title-part'),
       },
       about: {
         type: 'string',
-        title: 'About yourself (optional)',
+        title:
+          t('input-yourselft-title') + ' ' + t('input-optional-title-part'),
       },
     },
   };
 
   const uiSchema = {
     name: {
-      'ui:placeholder': 'Jordan Belfort',
+      'ui:placeholder': t('input-name-or-pseudonym-placeholder'),
     },
     email: {
-      'ui:placeholder': 'thewolfofwallstreet@gmail.com',
-      'ui:help': 'We will send information on the next steps to this email.',
+      'ui:placeholder': t('input-email-placeholder'),
+      'ui:help': t('input-email-help'),
     },
     invitation: {
-      'ui:placeholder': '',
-      'ui:help': '',
+      'ui:placeholder': t('input-invitation-code-placeholder'),
     },
     blog: {
-      'ui:placeholder': 'https://jb.online',
-      'ui:help': 'Telegram or Youtube channel, website.',
+      'ui:placeholder': t('input-blog-placeholder'),
+      'ui:help': t('input-blog-help'),
     },
     about: {
       'ui:widget': 'textarea',
       'ui:options': {
         rows: 5,
       },
-      'ui:placeholder':
-        'How long have you been trading?\nWhat exchanges do you usually use?',
+      'ui:placeholder': t('input-yourselft-help'),
     },
   };
 
@@ -100,7 +104,7 @@ export default function JoinClubDialog(props: {
         ...formData,
       });
       handleSubmitFormEvent(formType, { account: account, ...formData });
-      showToastSuccess('Data sent successfully!');
+      showToastSuccess(t('text-data-sent-successfully'));
       close();
     } catch (error: any) {
       handleError(error, true);
@@ -116,9 +120,7 @@ export default function JoinClubDialog(props: {
       fullWidth
     >
       <DialogContent>
-        <Typography variant="h6">
-          Form to join the club EARLY ADOPTERS
-        </Typography>
+        <Typography variant="h6">{t('dialog-join-club-title')}</Typography>
         <Form
           schema={schema}
           uiSchema={uiSchema}
@@ -133,15 +135,15 @@ export default function JoinClubDialog(props: {
                 startIcon={<Save />}
                 variant="outlined"
               >
-                Sending data
+                {t('button-sending-data')}
               </LoadingButton>
             ) : (
               <>
                 <Button variant="contained" type="submit">
-                  Send
+                  {t('button-send')}
                 </Button>
                 <Button variant="outlined" onClick={() => props.onClose?.()}>
-                  Cancel
+                  {t('button-close')}
                 </Button>
               </>
             )}
