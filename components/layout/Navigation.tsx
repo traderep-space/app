@@ -1,14 +1,14 @@
 import {
+  AccountBalanceWallet,
   AccountCircleRounded,
-  AlternateEmail,
-  GitHub,
+  Language,
 } from '@mui/icons-material';
 import {
   AppBar,
   Button,
   Container,
+  Divider,
   IconButton,
-  Link as MuiLink,
   Menu,
   MenuItem,
   Stack,
@@ -16,8 +16,10 @@ import {
   Typography,
 } from '@mui/material';
 import { Box } from '@mui/system';
+import { DialogContext } from 'context/dialog';
 import { Web3Context } from 'context/web3';
 import ProjectIcon from 'icons/ProjectIcon';
+import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { MouseEvent, useContext, useState } from 'react';
 import { addressToShortAddress } from 'utils/converters';
@@ -26,7 +28,7 @@ import { addressToShortAddress } from 'utils/converters';
  * Component with navigation.
  */
 export default function Navigation() {
-  const { account, connectWallet } = useContext(Web3Context);
+  const { t } = useTranslation('common');
 
   return (
     <AppBar
@@ -39,55 +41,31 @@ export default function Navigation() {
       <Container maxWidth="lg">
         <Toolbar disableGutters>
           {/* Logo */}
-          <ProjectIcon sx={{ fontSize: 38 }} />
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href="/"
-            sx={{
-              ml: 0.8,
-              mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontWeight: 700,
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            TradeRep App
-          </Typography>
-          <Typography
-            color="text.secondary"
-            variant="body2"
-            sx={{ flexGrow: 1 }}
-          >
-            Pre-Alpha
-          </Typography>
-          {/* GitHub Link */}
-          <MuiLink href="https://github.com/traderep-space" target="_blank">
-            <IconButton size="large">
-              <GitHub />
-            </IconButton>
-          </MuiLink>
-          {/* Email link */}
-          <MuiLink href="mailto:traderep.space@gmail.com" target="_blank">
-            <IconButton size="large">
-              <AlternateEmail />
-            </IconButton>
-          </MuiLink>
-          {/* Connect wallet button */}
-          {!account && (
-            <Button
-              variant="contained"
-              onClick={() => {
-                connectWallet?.();
-              }}
-            >
-              Connect Wallet
-            </Button>
-          )}
-          {/* Setting menu */}
-          {account && <AccountMenu />}
+          <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'row' }}>
+            <ProjectIcon sx={{ fontSize: 32 }} />
+            <Link href="/" passHref>
+              <Typography
+                variant="h6"
+                component="a"
+                sx={{
+                  ml: 1,
+                  mr: 1,
+                  fontWeight: 700,
+                  color: 'inherit',
+                  textDecoration: 'none',
+                }}
+              >
+                {t('app-title')}
+              </Typography>
+            </Link>
+            <Typography color="text.secondary" variant="body2">
+              {t('app-subtitle')}
+            </Typography>
+          </Box>
+          {/* Language menu */}
+          <LanguageMenu />
+          {/* Account menu */}
+          <AccountMenu />
         </Toolbar>
       </Container>
     </AppBar>
@@ -95,7 +73,8 @@ export default function Navigation() {
 }
 
 function AccountMenu(): JSX.Element {
-  const { account, disconnectWallet } = useContext(Web3Context);
+  const { account, connectWallet, disconnectWallet } = useContext(Web3Context);
+  const { t } = useTranslation('common');
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
   function handleOpenAccountMenu(event: MouseEvent<HTMLElement>) {
@@ -125,41 +104,111 @@ function AccountMenu(): JSX.Element {
         open={Boolean(anchorElUser)}
         onClose={handleCloseAccountMenu}
       >
-        {/* Trader link */}
-        <Link href={`/traders/${account}`}>
+        {/* Link to home page */}
+        <Link href="/">
           <MenuItem onClick={handleCloseAccountMenu}>
-            <Stack direction="column" spacing={0}>
-              <Typography>My Page</Typography>
-              <Typography color="text.secondary" variant="body2">
-                {addressToShortAddress(account)}
-              </Typography>
-            </Stack>
+            {t('navigation-about-item')}
           </MenuItem>
         </Link>
-        {/* Traders link */}
-        <Link href="/traders">
+        {/* Link to feedback page */}
+        <Link href="/feedback">
           <MenuItem onClick={handleCloseAccountMenu}>
-            <Typography>Traders</Typography>
+            {t('navigation-feedback-item')}
           </MenuItem>
         </Link>
-        {/* Disconnect wallet button */}
+        <Divider />
+        {/* Connect or disconnect wallet button */}
         <Box
           sx={{
-            pt: '12px',
+            pt: '6px',
             pb: '6px',
             px: '16px',
             display: 'flex',
           }}
         >
-          <Button
-            sx={{ flex: 1 }}
-            variant="contained"
-            size="small"
-            onClick={() => disconnectWallet?.()}
-          >
-            Disconnect Wallet
-          </Button>
+          {account ? (
+            <Box>
+              <Button
+                sx={{ flex: 1 }}
+                variant="contained"
+                onClick={() => disconnectWallet?.()}
+              >
+                {t('button-disconnect-wallet')}
+              </Button>
+              <Stack
+                direction="row"
+                spacing={1}
+                alignItems="center"
+                justifyContent="center"
+                sx={{ mt: 1.5 }}
+              >
+                <AccountBalanceWallet
+                  sx={{ color: 'text.secondary', fontSize: 18 }}
+                />
+                <Typography variant="body2" color="text.secondary">
+                  {addressToShortAddress(account)}
+                </Typography>
+              </Stack>
+            </Box>
+          ) : (
+            <Button
+              sx={{ flex: 1 }}
+              variant="contained"
+              onClick={() => {
+                handleCloseAccountMenu();
+                connectWallet?.();
+              }}
+            >
+              {t('button-connect-wallet')}
+            </Button>
+          )}
         </Box>
+      </Menu>
+    </Box>
+  );
+}
+
+function LanguageMenu() {
+  const { t } = useTranslation('common');
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+
+  function handleOpenLanguageMenu(event: MouseEvent<HTMLElement>) {
+    setAnchorElUser(event.currentTarget);
+  }
+  function handleCloseLanguageMenu() {
+    setAnchorElUser(null);
+  }
+
+  return (
+    <Box sx={{ flexGrow: 0 }}>
+      <IconButton size="large" onClick={handleOpenLanguageMenu}>
+        <Language />
+      </IconButton>
+      <Menu
+        sx={{ mt: '45px' }}
+        anchorEl={anchorElUser}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        keepMounted
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        open={Boolean(anchorElUser)}
+        onClose={handleCloseLanguageMenu}
+      >
+        <Link href="/" passHref locale="en">
+          <MenuItem onClick={handleCloseLanguageMenu}>
+            {t('text-english')}
+          </MenuItem>
+        </Link>
+        <Link href="/" passHref locale="ru">
+          <MenuItem onClick={handleCloseLanguageMenu}>
+            {t('text-russian')}
+          </MenuItem>
+        </Link>
       </Menu>
     </Box>
   );

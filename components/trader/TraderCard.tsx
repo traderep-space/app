@@ -72,7 +72,7 @@ export default function TraderCard(props: { trader: Trader }) {
                     height: 94,
                     borderRadius: 2,
                   }}
-                  src={ipfsUrlToHttpUrl(bio?.uriData?.image)}
+                  // src={ipfsUrlToHttpUrl(bio?.uriData?.image)} // TODO: Fix code
                 >
                   <PersonOutlineOutlined sx={{ fontSize: 42 }} />
                 </Avatar>

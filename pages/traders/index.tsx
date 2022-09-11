@@ -5,6 +5,7 @@ import TraderList from 'components/trader/TraderList';
 import useError from 'hooks/useError';
 import useTrader from 'hooks/useTrader';
 import { useEffect, useState } from 'react';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 /**
  * Traders page.
@@ -28,4 +29,15 @@ export default function TradersPage() {
       <TraderList traders={traders} sx={{ mt: 2 }} />
     </Layout>
   );
+}
+
+/**
+ * Define localized texts at build time.
+ */
+export async function getStaticProps({ locale }: any) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    },
+  };
 }

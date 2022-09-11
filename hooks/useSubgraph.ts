@@ -51,10 +51,23 @@ export default function useSubgraph() {
     return response.forecasts;
   };
 
+  let findEarlyAdopterTokens = async function (
+    ids?: Array<string>,
+    owner?: string,
+    first?: number,
+    skip?: number,
+  ) {
+    const response = await makeSubgraphQuery(
+      getFindEarlyAdopterTokensQuery(ids, owner, first, skip),
+    );
+    return response.earlyAdopterTokens;
+  };
+
   return {
     findTraders,
     findBios,
     findForecasts,
+    findEarlyAdopterTokens,
   };
 }
 
@@ -147,6 +160,26 @@ function getFindForecastsQuery(
       type
       isVerified
       isTrue
+    }
+  }`;
+}
+
+function getFindEarlyAdopterTokensQuery(
+  ids?: Array<string>,
+  owner?: string,
+  first?: number,
+  skip?: number,
+) {
+  let idsFilter = ids
+    ? `id_in: ["${ids.map((id) => id.toLowerCase()).join('","')}"]`
+    : '';
+  let ownerFilter = owner ? `owner: "${owner.toLowerCase()}"` : '';
+  let filterParams = `where: {${idsFilter}, ${ownerFilter}}`;
+  let paginationParams = `first: ${first}, skip: ${skip}`;
+  return `{
+    earlyAdopterTokens(${filterParams},${paginationParams}) {
+      id
+      owner
     }
   }`;
 }

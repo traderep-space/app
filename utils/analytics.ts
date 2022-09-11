@@ -26,11 +26,37 @@ export function handlePageViewEvent() {
   }
 }
 
+export function handleConnectAccountEvent(account: string) {
+  if (isAnalyticsEnabled()) {
+    posthog.capture(POST_HOG_EVENT.connectedAccount, {
+      [POST_HOG_PROPERTY.account]: account.toLowerCase(),
+    });
+    posthog.alias(account.toLowerCase());
+  }
+}
+
 export function handleCatchErrorEvent(error: any) {
   if (isAnalyticsEnabled()) {
     posthog.capture(POST_HOG_EVENT.caughtError, {
       [POST_HOG_PROPERTY.errorMessage]: error?.message,
       [POST_HOG_PROPERTY.errorStack]: error?.stack,
+    });
+  }
+}
+
+export function handleSubmitFormEvent(formType: string, formData: any) {
+  if (isAnalyticsEnabled()) {
+    posthog.capture(POST_HOG_EVENT.submittedForm, {
+      [POST_HOG_PROPERTY.formType]: formType,
+      [POST_HOG_PROPERTY.formData]: formData,
+    });
+  }
+}
+
+export function handleCopyInvitationLinkEvent(link: string) {
+  if (isAnalyticsEnabled()) {
+    posthog.capture(POST_HOG_EVENT.copiedInvitationLink, {
+      [POST_HOG_PROPERTY.link]: link,
     });
   }
 }

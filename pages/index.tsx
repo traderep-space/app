@@ -1,22 +1,26 @@
-import { Button, Link as MuiLink, Stack, Typography } from '@mui/material';
+import { VerifiedOutlined, VpnLock } from '@mui/icons-material';
+import {
+  Avatar,
+  Button,
+  Divider,
+  Grid,
+  Link as MuiLink,
+  Stack,
+  Typography,
+} from '@mui/material';
 import { Box } from '@mui/system';
 import Layout from 'components/layout/Layout';
-import {
-  PAGE_HOME_OVERTITLE,
-  PAGE_HOME_SUBTITLE,
-  PAGE_HOME_TITLE,
-} from 'constants/texts';
-import { Web3Context } from 'context/web3';
 import BlockchainIcon from 'icons/BlockchainIcon';
+import { useTranslation } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useContext } from 'react';
 
 /**
  * Home page.
  */
 export default function HomePage() {
-  const { account, connectWallet } = useContext(Web3Context);
+  const { t } = useTranslation('common');
 
   function scrollTo(elementId: string) {
     const element = document.getElementById(elementId);
@@ -39,7 +43,6 @@ export default function HomePage() {
           display: 'flex',
           flexDirection: { xs: 'column', md: 'row' },
           mt: { xs: 0, md: 12 },
-          alignItems: { md: 'center' },
         }}
       >
         {/* Text and button */}
@@ -64,25 +67,28 @@ export default function HomePage() {
               alignItems={{ xs: 'center', md: 'center' }}
             >
               <BlockchainIcon sx={{ fontSize: 36 }} />
-              <Typography color="primary">{PAGE_HOME_OVERTITLE}</Typography>
+              <Typography color="primary">
+                {t('page-home-overtitle')}
+              </Typography>
             </Stack>
           </MuiLink>
           {/* Title */}
           <Typography variant="h3" sx={{ mt: { xs: 2, md: 0 } }}>
-            {PAGE_HOME_TITLE}
+            {t('page-home-title')}
           </Typography>
           {/* Subtitle */}
           <Typography variant="h6" color="text.secondary" sx={{ mt: 1.5 }}>
-            {PAGE_HOME_SUBTITLE}
+            {t('page-home-subtitle')}
           </Typography>
           {/* Button */}
-          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}>
-            <Link href="/traders">
-              <Button variant="contained" sx={{ px: 5, py: 1.5 }}>
-                Browse traders
-              </Button>
-            </Link>
-          </Box>
+          <Link href="/beta">
+            <Button
+              variant="contained"
+              sx={{ mt: { xs: 4, md: 3 }, px: 5, py: 1.5 }}
+            >
+              {t('button-start')}
+            </Button>
+          </Link>
         </Box>
         {/* Image */}
         <Box sx={{ flex: 1, mt: { xs: 4, md: 0 } }}>
@@ -96,6 +102,61 @@ export default function HomePage() {
           />
         </Box>
       </Box>
+    );
+  }
+
+  function Advantages() {
+    function Advantage({ title, subtitle, icon }: any) {
+      return (
+        <Box
+          sx={{
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            textAlign: 'center',
+          }}
+        >
+          <Avatar
+            sx={{
+              bgcolor: '#FFFFFF',
+              color: 'primary.main',
+              width: 60,
+              height: 60,
+            }}
+          >
+            {icon}
+          </Avatar>
+          <Typography variant="h5" sx={{ mt: 1 }}>
+            {title}
+          </Typography>
+          <Typography
+            color="text.secondary"
+            sx={{ px: { xs: 0, md: 8 }, mt: 0.5 }}
+          >
+            {subtitle}
+          </Typography>
+        </Box>
+      );
+    }
+
+    return (
+      <Grid container spacing={6} sx={{ mt: { xs: 4, md: 9 } }}>
+        <Grid item xs={12} md={6}>
+          <Advantage
+            title={t('page-home-advantage-1-title')}
+            subtitle={t('page-home-advantage-1-subtitle')}
+            icon={<VpnLock sx={{ fontSize: 28 }} />}
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Advantage
+            title={t('page-home-advantage-2-title')}
+            subtitle={t('page-home-advantage-2-subtitle')}
+            icon={<VerifiedOutlined sx={{ fontSize: 28 }} />}
+          />
+        </Grid>
+      </Grid>
     );
   }
 
@@ -143,29 +204,38 @@ export default function HomePage() {
       <Box id="how-it-works" sx={{ mt: 12 }}>
         {/* Title and subtitle */}
         <Box sx={{ textAlign: 'center' }}>
-          <Typography variant="h4">How does it work?</Typography>
+          <Typography variant="h4">
+            {t('page-home-how-it-works-title')}
+          </Typography>
           <Typography color="text.secondary" sx={{ mt: 1 }}>
-            Steps that allow to build a trustworthy reputation and filter out
-            scammers.
+            {t('page-home-how-it-works-subtitle')}
           </Typography>
         </Box>
         {/* Rows */}
         <Row
-          title="Send a forecast to the blockchain"
-          subtitle="This way the community will be sure that your market analysis has not been tampered with or recorded retroactively."
+          title={t('page-home-how-it-works-row-1-title')}
+          subtitle={t('page-home-how-it-works-row-1-subtitle')}
           image="/images/image-how-it-works-1.png"
         />
         <Row
-          title="Get reputation"
-          subtitle="A blockchain-based smart contract will verify your forecast. If the market confirms it, your reputation will be raised, otherwise lowered."
+          title={t('page-home-how-it-works-row-2-title')}
+          subtitle={t('page-home-how-it-works-row-2-subtitle')}
           image="/images/image-how-it-works-2.png"
           sx={{ flexDirection: { xs: 'column-reverse', md: 'row' } }}
         />
         <Row
-          title="Get to the top."
-          subtitle="Together we will determine who understands the market better than anyone else and who is trying to deceive others."
+          title={t('page-home-how-it-works-row-3-title')}
+          subtitle={t('page-home-how-it-works-row-3-subtitle')}
           image="/images/image-how-it-works-3.png"
         />
+        {/* Button to become a user */}
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 6 }}>
+          <Link href="/beta">
+            <Button variant="contained" sx={{ px: 5, py: 1.5 }}>
+              {t('button-start-earn-reputation')}
+            </Button>
+          </Link>
+        </Box>
       </Box>
     );
   }
@@ -173,7 +243,21 @@ export default function HomePage() {
   return (
     <Layout>
       <Header />
+      <Advantages />
+      <Divider sx={{ mt: 12 }} />
       <HowItWorks />
+      <Box sx={{ height: 48 }} />
     </Layout>
   );
+}
+
+/**
+ * Define localized texts at build time.
+ */
+export async function getStaticProps({ locale, nextI18NextConfig }: any) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'], nextI18NextConfig)),
+    },
+  };
 }

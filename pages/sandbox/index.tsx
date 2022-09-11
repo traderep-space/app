@@ -1,6 +1,7 @@
 import { Button, Divider, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import Layout from 'components/layout/Layout';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 /**
  * Sandbox page.
@@ -17,4 +18,15 @@ export default function SandboxPage() {
       </Box>
     </Layout>
   );
+}
+
+/**
+ * Define localized texts at build time.
+ */
+export async function getStaticProps({ locale }: any) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    },
+  };
 }

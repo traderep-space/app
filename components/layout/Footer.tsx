@@ -1,11 +1,13 @@
 import { Divider, Typography } from '@mui/material';
 import { Box } from '@mui/system';
-import { FOOTER_DEFAULT } from 'constants/texts';
+import { useTranslation } from 'next-i18next';
 
 /**
  * Component with footer.
  */
 export default function Footer() {
+  const { t } = useTranslation('common');
+
   return (
     <Box>
       <Divider />
@@ -14,7 +16,7 @@ export default function Footer() {
         variant="body2"
         sx={{ my: { xs: 8, md: 4 }, textAlign: 'center' }}
       >
-        {FOOTER_DEFAULT}
+        {t('page-footer-default')}
       </Typography>
     </Box>
   );

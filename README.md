@@ -2,7 +2,7 @@
 
 A decentrilized application that helps investors and beginners save money and time by filtering good traders from scammers with a reputation verified by blockchain
 
-🔗 Live Demo - https://traderep-app.vercel.app
+🔗 Link - https://traderep.space
 
 ## How it works
 

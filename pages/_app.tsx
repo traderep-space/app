@@ -1,4 +1,5 @@
 import { ThemeProvider } from '@mui/material';
+import { DataProvider } from 'context/data';
 import { DialogProvider } from 'context/dialog';
 import { Web3Provider } from 'context/web3';
 import type { AppProps } from 'next/app';
@@ -9,6 +10,7 @@ import { useEffect } from 'react';
 import { theme } from 'theme';
 import { handlePageViewEvent, initAnalytics } from 'utils/analytics';
 import '../styles/globals.css';
+import { appWithTranslation } from 'next-i18next';
 
 const LitJsSdk = require('lit-js-sdk');
 
@@ -60,14 +62,16 @@ function App({ Component, pageProps }: AppProps) {
     <ThemeProvider theme={theme}>
       <SnackbarProvider maxSnack={3}>
         <Web3Provider>
-          <DialogProvider>
-            <NextNProgress height={4} />
-            <Component {...pageProps} />
-          </DialogProvider>
+          <DataProvider>
+            <DialogProvider>
+              <NextNProgress height={4} />
+              <Component {...pageProps} />
+            </DialogProvider>
+          </DataProvider>
         </Web3Provider>
       </SnackbarProvider>
     </ThemeProvider>
   );
 }
 
-export default App;
+export default appWithTranslation(App);

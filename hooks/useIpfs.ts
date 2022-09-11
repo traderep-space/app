@@ -34,9 +34,7 @@ export default function useIpfs() {
   };
 
   let loadJsonFromIPFS = async function (ipfsUrl: string) {
-    const cid = ipfsUrlToCid(ipfsUrl);
-    const httpUrl = cidToHttpUrl(cid);
-    const response = await axios.get(httpUrl);
+    const response = await axios.get(ipfsUrlToHttpUrl(ipfsUrl));
     if (response.data.errors) {
       throw new Error(
         `Fail to loading json from IPFS: ${response.data.errors}`,
@@ -45,36 +43,17 @@ export default function useIpfs() {
     return response.data;
   };
 
-  /**
-   * Convert url like "ipfs://baf..." to cid "baf...".
-   */
-  let ipfsUrlToCid = function (ipfsUrl: string): string {
-    if (!ipfsUrl.startsWith(ipfsUrlPrefix)) {
-      throw new Error(`Fail to converting url to cid for url: ${ipfsUrl}`);
-    }
-    return ipfsUrl.replace(ipfsUrlPrefix, '');
-  };
-
-  /**
-   * Convert cid like "baf..." to http url.
-   */
-  let cidToHttpUrl = function (cid: string): string {
-    return `https://${cid}.ipfs.dweb.link`;
-  };
-
   let ipfsUrlToHttpUrl = function (ipfsUrl: string): string {
-    if (!ipfsUrl) {
-      return '';
+    if (!ipfsUrl || !ipfsUrl.startsWith(ipfsUrlPrefix)) {
+      throw new Error(`Fail to converting IPFS URL to HTTP URL: ${ipfsUrl}`);
     }
-    return cidToHttpUrl(ipfsUrlToCid(ipfsUrl));
+    return ipfsUrl.replace('ipfs://', 'https://ipfs.io/ipfs/');
   };
 
   return {
     uploadFileToIPFS,
     uploadJsonToIPFS,
     loadJsonFromIPFS,
-    ipfsUrlToCid,
-    cidToHttpUrl,
     ipfsUrlToHttpUrl,
   };
 }
