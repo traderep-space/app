@@ -118,7 +118,7 @@ function Bio(props: { traderId: string; sx?: any }) {
         {/* Image */}
         <Avatar
           sx={{ bgcolor: '#FFFFFF', width: 164, height: 164, borderRadius: 4 }}
-          src={ipfsUrlToHttpUrl(bio?.uriData?.image)}
+          // src={ipfsUrlToHttpUrl(bio?.uriData?.image)} // TODO: Fix code
         >
           <PersonOutlineOutlined sx={{ fontSize: 42 }} />
         </Avatar>
@@ -346,11 +346,13 @@ function Forecasts(props: {
 
 /**
  * Define localized texts before rendering the page.
+ *
+ * TODO: Fix vercel error - https://vercel.com/docs/error/application/FUNCTION_INVOCATION_TIMEOUT
  */
-export async function getServerSideProps({ locale }: any) {
-  return {
-    props: {
-      ...(await serverSideTranslations(locale, ['common'])),
-    },
-  };
-}
+// export async function getServerSideProps({ locale }: any) {
+//   return {
+//     props: {
+//       ...(await serverSideTranslations(locale, ['common'])),
+//     },
+//   };
+// }
