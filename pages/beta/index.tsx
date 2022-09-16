@@ -68,6 +68,7 @@ export default function BetaPage() {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
+            textAlign: 'center',
           }}
         >
           <Typography sx={{ mb: 2 }}>{t('page-beta-step-1-title')}</Typography>
@@ -88,6 +89,7 @@ export default function BetaPage() {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
+            textAlign: 'center',
           }}
         >
           <Typography variant="h6" sx={{ mb: 1.5 }}>
@@ -96,7 +98,7 @@ export default function BetaPage() {
           <Typography sx={{ mb: 4 }}>
             {t('page-beta-step-2-subtitle')}
           </Typography>
-          <Stack direction="row" spacing={2}>
+          <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
             <Button
               variant="contained"
               size="large"
@@ -127,6 +129,7 @@ export default function BetaPage() {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
+            textAlign: 'center',
           }}
         >
           <Typography variant="h6" sx={{ mb: 1 }}>
