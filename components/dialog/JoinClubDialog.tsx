@@ -26,7 +26,7 @@ export default function JoinClubDialog(props: {
   onClose?: Function;
 }) {
   const { account } = useContext(Web3Context);
-  const { t } = useTranslation('common');
+  const { i18n, t } = useTranslation('common');
   const { handleError } = useError();
   const { showToastSuccess } = useToast();
   const { submitForm } = useFormSubmit();
@@ -99,11 +99,13 @@ export default function JoinClubDialog(props: {
   async function submit({ formData }: any) {
     try {
       setIsLoading(true);
-      await submitForm(formType, {
-        account: account,
+      const expandedFormData = {
         ...formData,
-      });
-      handleSubmitFormEvent(formType, { account: account, ...formData });
+        account: account,
+        language: i18n.language,
+      };
+      await submitForm(formType, expandedFormData);
+      handleSubmitFormEvent(formType, expandedFormData);
       showToastSuccess(t('text-data-sent-successfully'));
       close();
     } catch (error: any) {

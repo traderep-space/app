@@ -16,7 +16,7 @@ import { handleSubmitFormEvent } from 'utils/analytics';
  * Feedback page.
  */
 export default function FeedbackPage() {
-  const { t } = useTranslation('common');
+  const { t, i18n } = useTranslation('common');
   const { handleError } = useError();
   const { showToastSuccess } = useToast();
   const { submitForm } = useFormSubmit();
@@ -60,8 +60,12 @@ export default function FeedbackPage() {
     try {
       setFormData(formData);
       setIsLoading(true);
-      await submitForm(formType, formData);
-      handleSubmitFormEvent(formType, formData);
+      const expandedFormData = {
+        ...formData,
+        language: i18n.language,
+      };
+      await submitForm(formType, expandedFormData);
+      handleSubmitFormEvent(formType, expandedFormData);
       setFormData({});
       showToastSuccess(t('text-data-sent-successfully'));
     } catch (error: any) {
