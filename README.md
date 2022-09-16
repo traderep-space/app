@@ -33,5 +33,6 @@ A decentrilized application that helps investors and beginners save money and ti
 
 - Install depencies - `npm install`
 - Start development server - `npm run dev`
+- Run production build - `npm run build` and `npm run start`
 - Deploy to Vercel - `vercel`
 - Deploy to production on Vercel - `vercel --prod`
