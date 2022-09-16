@@ -2,6 +2,7 @@ import {
   AccountBalanceWallet,
   ContentCopy,
   Edit,
+  Launch,
   PeopleAlt,
 } from '@mui/icons-material';
 import {
@@ -140,17 +141,33 @@ export default function BetaPage() {
             {accountEarlyAdopterToken.id}{' '}
             {t('page-beta-step-3-subtitle-1-part-2')}
           </Typography>
-          <Button
-            variant="outlined"
-            size="small"
-            startIcon={<PeopleAlt />}
-            onClick={() =>
-              showDialog?.(<AboutClubDialog onClose={closeDialog} />)
-            }
+          <Stack
+            direction={{ xs: 'column', md: 'row' }}
+            spacing={2}
             sx={{ mb: 1.5 }}
           >
-            {t('button-learn-club')}
-          </Button>
+            {process.env.NEXT_PUBLIC_NETWORK_CHAIN_ID === '137' && (
+              <Button
+                variant="outlined"
+                size="small"
+                startIcon={<Launch />}
+                href={`https://opensea.io/assets/matic/${process.env.NEXT_PUBLIC_EARLY_ADOPTER_TOKEN_CONTRACT_ADDRESS}/${accountEarlyAdopterToken.id}`}
+                target="_blank"
+              >
+                {t('button-open-token-on-opensea')}
+              </Button>
+            )}
+            <Button
+              variant="outlined"
+              size="small"
+              startIcon={<PeopleAlt />}
+              onClick={() =>
+                showDialog?.(<AboutClubDialog onClose={closeDialog} />)
+              }
+            >
+              {t('button-learn-club')}
+            </Button>
+          </Stack>
           {accountEarlyAdopterTokenVideo && (
             <CardMedia
               component="video"
