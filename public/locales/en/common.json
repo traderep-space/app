@@ -77,10 +77,7 @@
   "input-question-or-suggestion-title": "Your question or suggestion",
   "input-invitation-code-title": "Your invitation code",
   "input-invitation-code-placeholder": "7D78E0E9C9",
-  "input-blog-title": "Your blog",
-  "input-blog-placeholder": "https://jb.online",
-  "input-blog-help": "Telegram or Youtube channel, website.",
   "input-yourselft-title": "About yourself",
-  "input-yourselft-help": "How long have you been trading? What exchanges do you usually use?",
+  "input-yourselft-help": "How long have you been trading? What exchanges do you usually use? Share your Telegram channel or blog, if you have one.",
   "input-optional-title-part": "(optional)"
 }

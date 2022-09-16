@@ -36,7 +36,7 @@ export default function JoinClubDialog(props: {
 
   const schema: JSONSchema7 = {
     type: 'object',
-    required: ['name', 'email'],
+    required: ['name', 'email', 'about'],
     properties: {
       name: {
         type: 'string',
@@ -46,6 +46,10 @@ export default function JoinClubDialog(props: {
         type: 'string',
         title: t('input-email-title'),
       },
+      about: {
+        type: 'string',
+        title: t('input-yourselft-title'),
+      },
       invitation: {
         type: 'string',
         title:
@@ -53,15 +57,6 @@ export default function JoinClubDialog(props: {
           ' ' +
           t('input-optional-title-part'),
         default: localStorage.getItem(LOCAL_STORAGE_INVITATION_CODE_KEY),
-      },
-      blog: {
-        type: 'string',
-        title: t('input-blog-title') + ' ' + t('input-optional-title-part'),
-      },
-      about: {
-        type: 'string',
-        title:
-          t('input-yourselft-title') + ' ' + t('input-optional-title-part'),
       },
     },
   };
@@ -76,10 +71,6 @@ export default function JoinClubDialog(props: {
     },
     invitation: {
       'ui:placeholder': t('input-invitation-code-placeholder'),
-    },
-    blog: {
-      'ui:placeholder': t('input-blog-placeholder'),
-      'ui:help': t('input-blog-help'),
     },
     about: {
       'ui:widget': 'textarea',
