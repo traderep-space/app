@@ -254,10 +254,10 @@ export default function HomePage() {
 /**
  * Define localized texts at build time.
  */
-export async function getStaticProps({ locale, nextI18NextConfig }: any) {
+export async function getStaticProps({ locale }: any) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['common'], nextI18NextConfig)),
+      ...(await serverSideTranslations(locale, ['common'])),
     },
   };
 }
